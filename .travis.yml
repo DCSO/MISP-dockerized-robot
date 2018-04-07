@@ -2,13 +2,8 @@
 sudo: required
 services: docker
 
-addons:
-  apt:
-    packages:
-      - docker-ce
-
 env:
- global:
+  global:
   - CONTAINER=robot
   - LATEST_VERSION=1.0.0
   - LATEST_BASE=ubuntu
