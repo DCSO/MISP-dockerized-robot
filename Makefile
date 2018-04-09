@@ -19,6 +19,9 @@ test:
 test-travis:
 	.travis/travis-cli.sh check
 
+build-travis:
+	.travis/build.sh $(v)-$(b)
+
 build:
 	$(foreach b, $(BASE), \
 		$(foreach v, $(VERSION), \
@@ -28,8 +31,6 @@ build:
 		docker images|grep $(CONTAINER)
 
 tags:
-	echo $(REPOS)
-	echo $(VERSION)
 	$(foreach i, $(REPOS), \
 		$(foreach v, $(VERSION), docker tag $(i):$(v)-$(LATEST_BASE) $(i):$(v);) \
 		docker tag $(i):$(LATEST_VERSION)-$(LATEST_BASE) $(i):latest; ) 
@@ -42,4 +43,4 @@ else ifeq ($(LOCATION),private)
 	docker push $(PRIVATE_REPO)
 endif
 
-.PHONY: build build-travis push-image test test-travis
+.PHONY: build build-travis push-image test test-travis tags
