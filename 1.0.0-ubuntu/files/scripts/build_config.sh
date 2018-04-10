@@ -67,7 +67,7 @@ function check_exists_configs(){
   fi
   # check config file and backup if its needed
   if [[ -f $MISP_CONF_YML ]]; then
-    read -r -p "A misp config file exists and will be overwritten, are you sure you want to contine? [y/N] " response
+    read -r -p "A misp config file exists and will be overwritten, are you sure you want to continue? [y/N] " response
     case $response in
       [yY][eE][sS]|[yY])
         # move existing configuration in backup folder and add the date of this movement
@@ -215,6 +215,8 @@ if [ "$1" == "--automated-build" ]
     # Automated Startup only for travis
     ################################################
     # ask no questions only defaults
+    echo "automatic build"
+    
   else
     ################################################
     # Normal Startup
@@ -235,14 +237,6 @@ cat << EOF > $DOCKER_COMPOSE_CONF
 #!/bin/bash
 #description     :This script set the Environment variables for the right MISP Docker Container and Environments
 #=================================================
-# ------------------------------
-# Docker Container
-# ------------------------------
-MISP_CONTAINER_VERSION=${MISP_CONTAINER_VERSION}
-REDIS_CONTAINER_VERSION=${REDIS_CONTAINER_VERSION}
-DB_CONTAINER_VERSION=${DB_CONTAINER_VERSION}
-PROXY_CONTAINER_VERSION=${PROXY_CONTAINER_VERSION}
-ROBOT_CONTAINER_VERSION=${ROBOT_CONTAINER_VERSION}
 # ------------------------------
 # Hostname
 # ------------------------------
@@ -268,10 +262,6 @@ MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 # ------------------------------
 HTTP_PORT=${HTTP_PORT}
 HTTPS_PORT=${HTTPS_PORT}
-HTTP_SERVERADMIN=${HTTP_SERVERADMIN}
-ALLOW_ALL_IPs=${ALLOW_ALL_IPs}
-client_max_body_size=${client_max_body_size}
-HTTP_ALLOWED_IP=${HTTP_ALLOWED_IP}
 # ------------------------------
 # Redis configuration
 # ------------------------------
@@ -318,6 +308,7 @@ REDIS_port:
 client_max_body_size: "client_max_body_size ${client_max_body_size}"
 ALLOW_ALL_IPs: "${ALLOW_ALL_IPs}"
 HTTP_ALLOWED_IP: "${HTTP_ALLOWED_IP}"
+HTTP_SERVERADMIN: "${HTTP_SERVERADMIN}"
 # ------------------------------
 # Proxy Configuration
 # ------------------------------
