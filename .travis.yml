@@ -1,38 +1,38 @@
-language: ruby
 sudo: required
 services: docker
 
 env:
   global:
-  - CONTAINER=robot
-  - LATEST_VERSION=1.0.0
-  - LATEST_BASE=ubuntu
   # Docker Username
-  - secure: "aMYHwyVryzSscNcAXMnre113ND31ILGdsUBhyxI4Ih5osYDxir6xJTHP7pWHgsRDlb0yTVeLJAOnfwrou/Zf1CwHMUMf0mBiGzv7kPgvz+fq4VHPp9yS+cMJE0zIjtqGltCka1hiYvv8Bir2XVnr9yInqWhIM2XLSvjLnpyZJ30iauLlf87dmnc1/z7+qZIWQZ1hOsjta2+y9Trdp/FduIw853mIxjb7WKc5C9ch5O3y4RkbLvcF7T8q0IDyHWzzJ5UTT0/0zApqHH7AT9haSTr4f0dcrvhmAQssjn2h4dFV0Puryu2RJd5He4xjWdhFmHM8E2j5WlIaaXw5irt+12wxqVVKawoPAtAE7qokkl7j2Dz76FTX8iGsPSCpdPDwpqf2ySdoag5cV1xbeDZoFleniBpV2jSXWCPf7CZuMIDllaAR1Uc8npUOCJ0VSZd+G5aYl0Tmltup8Jmf17KODjnB7libWEXz48AuLDRzxQPxw24sgecyTkuiaMm/WfmyUss2nEOobUHm0f7jV8OOQldRqfq4NyE/fTaiWOvanW0z2sLMuO8p0snbO+/Lx1vOs0YapkFh3SE+ypedBadcYJGrOboXAqkJEq+Oj/qZxWXH23WcpMS9OK30n4qKndvsZPG4/N4c5uiAkE0XkNnccCdVs+7jGWz7TZuGoRHUWjE="
+  - secure: "iFIZ02XsPHv49u0hNtUfplsI9h3GZ0H8NeM5IR9A20HQ7OINNnuiiYGUVDwwUpLNGzYdUpJTTzFLMV0khOo4MDSfgoOyGvSYf8ojbCod1mdAdzNLcfrlbA62oexpuhkTZIf7rCISAyso4mc0qJ5r60IZNdvRhioIIiHlD/w/sHqXqIkOVK81AGQBuqQNqLLIPz0b5scmhdQIT6eDeswB9yKCRIOMLH1GgNch/e3Ft9pA152gtLiMnhL7SA3ITwM6y4sNHQAUdXB0iwcEQkaHJRqOhxyQRsSX+V9XZ71aLXLt7vPksbOuNuoT2TKFwqljJ2hC4ZtESYw5gep6++Fr/1BZCoxUiuBG4+h1V36bWVIARqpo7wZhsQCkuwh23LP+AzLOLAKTYDsR2JhrWLySn+/lNaPCNPDbsSA+kJGAsU0Gz5fss5blpqgRxFUHBJf6kA++D7fOA2n/dOtSwVBYeOA1ZuQeSWQ9sLqkAnbSa2gBRIdfaDbxEg8eZoSRlXmCF+L5jU5/WjvVmmaeaRYfpYITx0ctIXiflqsfdnjXU2QxMm1gvYhepb0A0ZKh55RhW+sv47RWjNSc7wdwIfTQB5xQDz1IM4/ijcAcxTN8ZSPapy3EK5vcgJPCIEo53m+LzFCMbAYPcSSIoYBsCwsSCLbZVj4X4YJndjOT/C84TP4="
   # Docker Password
-  - secure: nm87Bg2uXKInK43lGoCjDKO/SiUtIGu0zGGVaHEdwfFgFdgG+0IAZ3vzoozaM7jH6VD+3hoMY8C/ya/Hv6EkaAh9+Pg20jyCZDaahaO4eyJSRPOyoVSe0CzsPhXvwxiTJM7gKgS9Qc+z7GZwNii+YeHGoj50zZJwhudG6BXAVI59IzNgLtWRkkH02U5r4erP1Zm0TGxQRHE7L/C2u+pe6+j75aoTqwiDfxRJyjOdulpVmZD6RxzZv6fJqg/bRYjtFCvkVEZKPNL2GA//AGBviaTLVVp6ehZhYFinywq7gsZ6zT2eUSfrmg/zWOCXg+fd//hlxReVu25OMHEa5VqxiwF+SPk/Am1LPiC1lrQJEvqMdKi75Ql3vnUVb/MBE44roOd3IbTSEkrt7tiRegBiOQgp1gTvku1zkPXoaCt/N8Q297ZwLEJupZwpvCcDx4jasxuPQAxnoYZau7fpCG6ocDS6lnYO6H/WbR7UTdsf5qV/gDwIqMZjaF9F7l5RXfLOpv5230z4oUKpTVp9aeruA7Q66UOx7Cy7Rbkpa8SxNzCxhPRjkvDTMhxzYZZFpOynFkIaYRLmJTfwIQ+lakKdmLVatSBTTGe5H6yu3fPQOOHAteqaJHY08wwXG6hgAUx54LiqhCyyeIEjLx7xpyjTnz9BXjfBG1tkJUuC611TiQM=
+  - secure: "dp1+oiM+n892ezSxnEhjA6PCOt7CKeQeuh4Ir6+n8DLRv/udzCOhvvi3qK1tjZ8Fb77MeRtjWYsg+iCjg8d1S3BRMWfUlVRLcTAfCTsMaOzXKwcrVcOcvVuAsr57kS+DCePjQmwd/urXHBkDAzwzuMJHBMEgW5ZUZCONj2T4+SOKC2lTAC7UAH/qYfyTNzUmU7DZgq5ucs4UcK1YYNGEayMNAn+9J8u+7wGk8XuXI249REvW77mCipGJtaAgvHFG0LaHg8qQV6UBKABFaRnTR+pnYxlAKWZ0TCmy+8gnsW5l5u+ABU8jaqU62TbIc3bLwi9syuQWLnOE0E99mK2abT4ZgfsLkqNMpXhD5NpX8ujmjY1SPUq0EM358A6RUqf7qrB3eKgjgtMtiZQq8i34fw0x+g7lCRNN4z3G+d23YfdLavUr9w7SwMgXS9Gtj9pHpIKSZ9L41zrW60KKCcPocEUYAH/cQHTawkMtSeLl1+ZfjvGyoOGd0yLxgQDm+ay56iO6tyZ9K+UARcIZeaEA2ktXFx5bZW+XU6KTRsAOXNy1Sd5okws/bCTK7369eNaG+6TQipL7DWIpjZHtCwPqMA9MezHi07x09BJOevf9Du2tsq05Z1kgb/88dOc3abgpxjHemBlhYuM3b40lUNkJALwSfssY2ctbw0tiZCOjlWg="
   matrix:
   - VERSION=1.0.0 BASE=ubuntu
 
-before_install:
-- sudo apt-get update
-- sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-- git config --global user.name "MISP-dockerized-bot"
-- git clone --recurse-submodules https://github.com/8ear/MISP-dockerized-documentation.git
-  ~/misp-docs
-script:
-- travis_retry ./build.sh ${VERSION}-${BASE}
-- ~/misp-docs/official-images/test/run.sh "dcso/misp-${CONTAINER}:$VERSION-${BASE}"
-  
-before_deploy:
-- docker tag dcso/misp-${CONTAINER}:${VERSION}-${BASE}
-- docker tag dcso/misp-${CONTAINER}:${LATEST_VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:latest
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-deploy:
-  provider: script
-  script:
-  - docker push dcso/misp-${CONTAINER}-private:${VERSION}-${BASE} 
-  - docker push dcso/misp-${CONTAINER}-private:latest
-  on:
-    branch: master
+before_install: 
+- './.travis/main.sh'
+
+script:
+- travis_retry make build-travis v=${VERSION} b=${BASE}
+- travis_retry make tags-travis v=${VERSION} b=${BASE}
+
+after_script:
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+# check if branch=master and the current build is no pull request, then push it to docker hub
+- if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
+    if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
+      make push-image LOCATION=public; 
+    fi; 
+  fi
+# check if branch=develop and the current build is no pull request, then push it to docker hub
+- if [[ "$TRAVIS_BRANCH" == "develop" ]]; then 
+    if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
+      make push-image LOCATION=private; 
+    fi; 
+  fi
+
+# don't notify me when things fail
+notifications:
+  email: false
