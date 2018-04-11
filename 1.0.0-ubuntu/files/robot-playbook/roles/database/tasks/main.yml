@@ -17,6 +17,7 @@
     priv: "{{ MYSQL_DATABASE }}.*:ALL,GRANT"
     host: "%"
     state: present
+  when: mysql_init.changed
 
 # - name: Get actual MISP database file from repository
 #   get_url:
@@ -38,3 +39,5 @@
     login_password: "{{ MYSQL_PASSWORD }}"
     login_host: misp-db
     state: import
+  # deactivated when, because database and user are created from docker container.
+  #when: mysql_init.changed
