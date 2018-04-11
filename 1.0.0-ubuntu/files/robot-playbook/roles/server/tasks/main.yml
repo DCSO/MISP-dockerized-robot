@@ -120,7 +120,7 @@
   copy:
     remote_src: True
     src: "/srv/misp-dockerized/config/ssl/{{ item }}"
-    dest: "/srv/misp-proxy/ssl/{{ item }}"
+    dest: "/srv/apache-config/ssl/{{ item }}"
     force: yes
     owner: root
     group: root

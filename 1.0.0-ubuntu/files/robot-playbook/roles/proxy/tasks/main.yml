@@ -54,12 +54,36 @@
   shell: openssl dhparam -out /srv/misp-proxy/ssl/dhparams.pem 2048
   when: dh_params.stat.exists is defined and not dh_params.stat.exists
 
+- name: Proxy | check if HTTP config is activated
+  local_action: stat path=/srv/misp-proxy/SERVER_HTTP_only.conf
+  register: server_http
+
+- name: Proxy | check if HTTPS config is deactivated
+  local_action: stat path=/srv/misp-proxy/SERVER_HTTPS_and_redirected_HTTP
+  register: server_https
+
+- name: Proxy | activate https config to proxy
+  become: yes
+  copy:
+    remote_src: True
+    src: "/srv/misp-proxy/{{ item }}"
+    dest: "/srv/misp-proxy/{{ item }}.conf"
+    force: yes
+    owner: root
+    group: root
+    mode: 0750
+  with_items:
+    - SERVER_HTTPS_and_redirected_HTTP
+  when: (server_https.stat.exists is defined and server_https.stat.exists)
+
 - name: Proxy | Switch http to https config 
   become: yes
   shell: "{{ item }}"
   with_items:
     - "mv /srv/misp-proxy/SERVER_HTTP_only.conf /srv/misp-proxy/SERVER_HTTP_only"
-    - "mv /srv/misp-proxy/SERVER_HTTPS_and_redirected_HTTP /srv/misp-proxy/SERVER_HTTPS_and_redirected_HTTP.conf"
+    #- "cp /srv/misp-proxy/SERVER_HTTPS_and_redirected_HTTP /srv/misp-proxy/SERVER_HTTPS_and_redirected_HTTP.conf"
+  when: (server_http.stat.exists is defined and server_http.stat.exists)
+    
 
 # Reload Proxy Config
 - name: Proxy | Restart proxy
