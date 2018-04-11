@@ -115,6 +115,20 @@
   shell: openssl dhparam -out /srv/apache-config/ssl/dhparams.pem 2048
   when: dh_params.stat.exists is defined and not dh_params.stat.exists
 
+- name: Apache2 SSL | copy dh params file to proxy
+  become: yes
+  copy:
+    remote_src: True
+    src: "/srv/misp-dockerized/config/ssl/{{ item }}"
+    dest: "/srv/misp-proxy/ssl/{{ item }}"
+    force: yes
+    owner: root
+    group: root
+    mode: 0750
+  with_items:
+    - dhparams.pem
+  when: (dh_params.stat.exists is defined and dh_params.stat.exists)
+
 - name: Apache2 SSL | Activate SSL config
   copy:
     remote_src: True

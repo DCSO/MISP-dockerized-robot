@@ -13,6 +13,10 @@
   local_action: stat path=/srv/misp-dockerized/config/ssl/key.pem
   register: cert_key_file
 
+- name: Proxy | No cert found, therefore create internal certificate
+  shell: openssl req -x509 -newkey rsa:4096 -keyout /srv/misp-dockerized/config/ssl/key.pem -out /srv/misp-dockerized/config/ssl/cert.pem -days 3650 -nodes -subj '/CN={{MISP_hostname}}'
+  when: (cert_file.stat.exists is defined and not cert_file.stat.exists) and (cert_key_file.stat.exists is defined and not cert_key_file.stat.exists)
+
 - name: Proxy | Copy certficate and key to proxy
   become: yes
   copy:
@@ -28,13 +32,23 @@
     - key.pem
   when: (cert_file.stat.exists is defined and cert_file.stat.exists) and (cert_key_file.stat.exists is defined and cert_key_file.stat.exists)
 
-- name: Proxy | No cert found, therefore create internal certificate
-  shell: openssl req -x509 -newkey rsa:4096 -keyout /srv/misp-dockerized/config/ssl/key.pem -out /srv/misp-dockerized/config/ssl/cert.pem -days 3650 -nodes -subj '/CN={{MISP_hostname}}'
-  when: (cert_file.stat.exists is defined and not cert_file.stat.exists) and (cert_key_file.stat.exists is defined and not cert_key_file.stat.exists)
-
 - name: Proxy | check if DH params file is existing
   local_action: stat path=/srv/misp-dockerized/config/ssl/dhparams.pem
   register: dh_params
+
+- name: Proxy | copy dh params file to proxy
+  become: yes
+  copy:
+    remote_src: True
+    src: "/srv/misp-dockerized/config/ssl/{{ item }}"
+    dest: "/srv/misp-proxy/ssl/{{ item }}"
+    force: yes
+    owner: root
+    group: root
+    mode: 0750
+  with_items:
+    - dhparams.pem
+  when: (dh_params.stat.exists is defined and dh_params.stat.exists)
 
 - name: Proxy | Create DH params - This can take a long time, so take a break and enjoy a cup of tea or coffee.
   shell: openssl dhparam -out /srv/misp-proxy/ssl/dhparams.pem 2048
