@@ -2,10 +2,10 @@
 #	Makefile for robot
 #
 CONTAINER := robot
-LATEST_VERSION := 1.0.0
+LATEST_VERSION := 1.0.1
 LATEST_BASE := ubuntu
 BASE := ubuntu
-VERSION :=1.0.0
+VERSION :=1.0.0 1.0.1
 
 CMDSEP := &
 PUBLIC_REPO := dcso/misp-$(CONTAINER)
