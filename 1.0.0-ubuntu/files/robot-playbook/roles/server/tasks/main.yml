@@ -1,48 +1,35 @@
 ##### Copy MISP configs #####
-# is done via dockerfile:
-# - name: Configure MISP | Copy MISP configuration files
-#   copy:
-#     remote_src: True
-#     src: "/srv/misp-server/MISP/app/Config/{{ item }}.default.php"
-#     dest: "/srv/misp-server/MISP/app/Config/{{ item }}.php"
-#     force: yes
-#     owner: www-data
-#     group: www-data
-#     mode: 0750
-#   with_items:
-#     - bootstrap
-#     - database
-#     - core
-#     - config
+- name: Configure MISP | Copy MISP configuration files
+  copy:
+    remote_src: True
+    src: "{{MISP_PATH}}/app/Config/{{ item }}.default.php"
+    dest: "{{MISP_PATH}}/app/Config/{{ item }}.php"
+    force: yes
+    owner: www-data
+    group: www-data
+    mode: 0750
+  with_items:
+    - bootstrap
+    - database
+    - core
+    - config
 
 #### Write settings #####
-- name: Configure MISP | Set DB-Password
+- name: Configure MISP | Set DB User, Password and Host
   replace:
-    path: /srv/misp-server/MISP/app/Config/database.php
-    regexp: "db password"
-    replace: "{{ MYSQL_PASSWORD }}"
+    name: "{{MISP_PATH}}/app/Config/database.php"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
     owner: www-data
     group: www-data
-
-- name: Configure MISP | Set DB-User
-  replace:
-    path: /srv/misp-server/MISP/app/Config/database.php
-    regexp: "db login"
-    replace: "{{ MYSQL_USER }}"
-    owner: www-data
-    group: www-data
-
-- name: Configure MISP | Set DB-Host
-  replace:
-    path: /srv/misp-server/MISP/app/Config/database.php
-    regexp: "localhost"
-    replace: "{{ MYSQL_HOST }}"
-    owner: www-data
-    group: www-data
+  with_items:
+  - { regexp: "db password", replace: "{{ MYSQL_PASSWORD }}" }
+  - { regexp: "db login", replace: "{{ MYSQL_USER }}" }
+  - { regexp: "localhost", replace: "{{ MYSQL_HOST }}" }
 
 - name: Configure MISP | Set MISP-Url
   replace:
-    path: /srv/misp-server/MISP/app/Config/config.php
+    name: "{{MISP_PATH}}/app/Config/config.php"
     regexp: "'baseurl'\\s*=>\\s*''"
     replace: "'baseurl'                        => 'https://{{ MISP_hostname }}:{{ MISP_hostport }}'"
     owner: www-data
@@ -50,7 +37,7 @@
 
 - name: Configure MISP | Set Redis URL
   replace:
-    path: /srv/misp-server/MISP/app/Plugin/CakeResque/Config/config.php
+    name: "{{MISP_PATH}}/app/Plugin/CakeResque/Config/config.php"
     regexp: "'host'\\s*=>\\s*'localhost'" # 'host' => 'misp-redis'
     replace: "'host' => '{{ REDIS_hostname }}'"
     owner: www-data
@@ -58,86 +45,34 @@
 
 ##### Check permissions #####
 - name: Configure MISP | Check permissions
-  shell: "{{ item }}"
-  become: yes
+  file:
+    path: "{{ item.file }}"
+    owner: www-data
+    group: www-data
+    mode: "{{ item.mode }}"
   with_items:
-    - "chown -R www-data:www-data /srv/misp-server/MISP"
-    - "chmod -R 750 /srv/misp-server/MISP"
-    - "chmod -R g+ws /srv/misp-server/MISP/app/tmp"
-    - "chmod -R g+ws /srv/misp-server/MISP/app/files"
-    - "chmod -R g+ws /srv/misp-server/MISP/app/files/scripts/tmp"
+  - {file: "{{MISP_PATH}}", mode: "0750" }
+  - {file: "{{MISP_PATH}}/app/tmp", mode: "g+ws" }
+  - {file: "{{MISP_PATH}}/app/files", mode: "g+ws" }
+  - {file: "{{MISP_PATH}}/app/files/scripts/tmp", mode: "g+ws" }
 
 ##### Configure SSL #####
-- name: Apache2 SSL | Create SSL folder
-  file:
-    path: /srv/apache-config/ssl
-    owner: root
-    group: root
-    mode: 0640
-    state: directory
+- include: tasks/ssl.yml
 
-# - name: Apache2 SSL | Create internal certificate
-#   shell: openssl req -x509 -newkey rsa:4096 -keyout /srv/apache-config/ssl/key.pem -out /srv/apache-config/ssl/cert.pem -days 3650 -nodes -subj '/CN=misp-server'
-
-- name: Apache2 SSL | check if Cert is existing
-  local_action: stat path=/srv/misp-dockerized/config/ssl/cert.pem
-  register: cert_file
-
-- name: Apache2 SSL | check if private Key of Cert is existing
-  local_action: stat path=/srv/misp-dockerized/config/ssl/key.pem
-  register: cert_key_file
-
-- name: Apache2 SSL | No cert found, therefore create internal certificate
-  shell: openssl req -x509 -newkey rsa:4096 -keyout /srv/misp-dockerized/config/ssl/key.pem -out /srv/misp-dockerized/config/ssl/cert.pem -days 3650 -nodes -subj '/CN={{MISP_hostname}}'
-  when: (cert_file.stat.exists is defined and not cert_file.stat.exists) and (cert_key_file.stat.exists is defined and not cert_key_file.stat.exists)
-
-- name: Apache2 SSL | Copy certficate and key to proxy
-  become: yes
+- name: Apache2 | Activate SSL config
   copy:
     remote_src: True
-    src: "/srv/misp-dockerized/config/ssl/{{ item }}"
-    dest: "/srv/apache-config/ssl/{{ item }}"
-    force: yes
-    owner: root
-    group: root
-    mode: 0750
-  with_items:
-    - cert.pem
-    - key.pem
-
-- name: Apache2 SSL | check if DH params file is existing
-  local_action: stat path=/srv/misp-dockerized/config/ssl/dhparams.pem
-  register: dh_params
-
-- name: Apache2 SSL | Create DH params - This can take a long time, so take a break and enjoy a cup of tea or coffee.
-  shell: openssl dhparam -out /srv/misp-dockerized/config/ssl/dhparams.pem 2048
-  when: dh_params.stat.exists is defined and not dh_params.stat.exists
-
-- name: Apache2 SSL | copy dh params file to proxy
-  become: yes
-  copy:
-    remote_src: True
-    src: "/srv/misp-dockerized/config/ssl/{{ item }}"
-    dest: "/srv/apache-config/ssl/{{ item }}"
-    force: yes
-    owner: root
-    group: root
-    mode: 0750
-  with_items:
-    - dhparams.pem
-
-- name: Apache2 SSL | Activate SSL config
-  copy:
-    remote_src: True
-    src: "/srv/apache-config/sites-available/misp.ssl.conf"
-    dest: "/srv/apache-config/sites-enabled/misp.ssl.conf"
+    src: "{{SERVER_CONFIG_PATH}}/sites-available/misp.ssl.conf"
+    dest: "{{SERVER_CONFIG_PATH}}/sites-enabled/misp.ssl.conf"
     force: yes
     owner: root
     group: root
     mode: 0640
 
-- name: Apache2 SSL | Reload Apache configs
-  become: yes
-  shell: "{{ item }}"
-  with_items:
-    - docker restart misp-server
+##### restart Docker Container #####
+- name: Apache2 | Restart Apache2 docker container
+  # docker_container:
+  #   name: misp-server
+  #   state: started
+  #   restart: yes
+  shell: docker restart misp-server

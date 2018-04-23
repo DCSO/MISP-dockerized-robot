@@ -3,20 +3,22 @@
   hosts: all
   become: yes
   become_method: sudo
-  gather_facts: True
-
-  #vars:
-    #DB_PW_MISP: lookup('env', 'VAR')
-    #DB_PW_ROOT: lookup('env', 'VAR')
-    #SERVER_FQDN: lookup('env', 'VAR')
+  gather_facts: False
 
   vars_files:
     - "/srv/misp-dockerized/config/misp.conf.yml"  
 
+  pre_tasks:
+  - name: read MISP Tag
+    shell: "cat /srv/misp-dockerized/docker-compose.yml |grep dcso/misp-server*|cut -d : -f 3|cut -d ' ' -f 1"
+    register: MISP
+    tags: always
+
   roles:
-  - role: server
-    tags: ['server']
-  - role: database
-    tags: ['database']
-  - role: proxy
-    tags: ['proxy']
+   - role: server
+     tags: ['server']
+   - role: database
+     tags: ['database']
+     MISP_TAG: "{{ MISP.stdout }}"
+   - role: proxy
+     tags: ['proxy']
