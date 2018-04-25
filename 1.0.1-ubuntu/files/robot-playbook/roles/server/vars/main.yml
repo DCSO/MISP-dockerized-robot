@@ -1,1 +1,1 @@
-SERVER_CONFIG_PATH: /srv/misp-dockerized/config/misp-server/apache2-config
+SERVER_CONFIG_PATH: /srv/misp-server/apache2/sites-enabled

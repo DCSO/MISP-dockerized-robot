@@ -14,8 +14,7 @@
 
 - name: Proxy | activate https config to proxy
   copy:
-    remote_src: True
-    src: "{{SERVER_CONFIG_PATH}}/{{ item }}"
+    src: "files/conf.d/{{ item }}.conf"
     dest: "{{SERVER_CONFIG_PATH}}/{{ item }}.conf"
     force: yes
     owner: root
@@ -23,18 +22,37 @@
     mode: 0640
   with_items:
     - "{{HTTPS_CONFIG_NAME}}"
-  when: server_https.stat.exists is defined and server_https.stat.exists
+  when: server_https.stat.exists is defined and server_https.stat.exists == False
 
 - name: Proxy | deactivate http config
   shell: "{{ item }}"
   with_items:
     - "mv {{SERVER_CONFIG_PATH}}/{{HTTP_CONFIG_NAME}}.conf {{SERVER_CONFIG_PATH}}/{{HTTP_CONFIG_NAME}}"
   when: server_http.stat.exists is defined and server_http.stat.exists
-    
+
+- name: Proxy | activate Allowed IPs
+  template:
+    src: "template/{{ item }}.j2"
+    dest: "{{SERVER_CONFIG_PATH}}/{{ item }}"
+    force: yes
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+  - GLOBAL_allow_IPs
+  when: ALLOW_ALL_IPs is defined and ALLOW_ALL_IPs == "no"
+
+- name: Proxy | update vars_common file
+  template:
+    src: "template/{{ item }}.j2"
+    dest: "{{SERVER_CONFIG_PATH}}/{{ item }}"
+    force: yes
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+  - vars_common
+
 ##### restart Docker Container #####
 - name: Proxy | Restart proxy
-  # docker_container:
-  #   name: misp-proxy
-  #   state: started
-  #   restart: yes
   shell: docker restart misp-proxy

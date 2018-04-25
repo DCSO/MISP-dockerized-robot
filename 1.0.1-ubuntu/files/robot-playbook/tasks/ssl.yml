@@ -31,7 +31,7 @@
   openssl_privatekey:
     path: "{{SSL_CONFIG_PATH}}/{{SSL_KEY_FILENAME}}"
     size: 4096
-    type: rsa
+    type: RSA
     force: false
     state: present
   run_once: true
