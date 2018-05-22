@@ -134,6 +134,7 @@ HEALTHCHECK NONE
 
 # Environment Variable for Proxy
 ENV HTTP_PROXY=""
+ENV HTTPS_PROXY=""
 ENV NO_PROXY="0.0.0.0"
 
 # Environment Variable to check Version
