@@ -1,13 +1,8 @@
 #
 #	Makefile
 #
-<<<<<<< HEAD
-.PHONY: help test test-travis build tags push 
-=======
 
-.PHONY: help test test-travis build tags push 
->>>>>>> Stashed changes
->>>>>>> MDD-42
+.PHONY: help test test-travis build tags push install notify-hub-docker-com
 
 help:
 	echo "Please use a command"
