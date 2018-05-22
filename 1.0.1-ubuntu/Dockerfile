@@ -32,7 +32,6 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y; \
     apt-get install -y \ 
         software-properties-common \
-        #supervisor \
         nano \
         vim \
         curl \
@@ -64,29 +63,7 @@ RUN apt-get update -y; \
     apt-get autoremove -y; \ 
     apt-get clean -y
 
-# # Install additional dependencies
-#   APT additional dependencies are installed on the first APT Run:
-# RUN apt-get install -y \ 
-# mariadb-client \
-# python-mysqldb \
-# python-dev \
-# python-pip \
-# libxml2-dev \
-# libxslt1-dev \
-# zlib1g-dev \
-# python-setuptools \
-# && apt-get autoremove -y && apt-get clean -y
-
 # Install Docker
-# https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-ce
-#   APT Docker dependencies are installed on the first APT Run:
-# RUN apt-get install -y \
-#     apt-transport-https \
-#     ca-certificates \
-#     curl \
-#     software-properties-common; \
-#     apt-get autoremove -y; apt-get clean -y;
-
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - ; \
     apt-key fingerprint 0EBFCD88; \
     add-apt-repository \
@@ -111,16 +88,16 @@ RUN add-apt-repository ppa:ansible/ansible; \
     apt-get update -y; \
     apt-get install ansible -y && apt-get autoremove -y && apt-get clean -y \
     mkdir /etc/ansible/playbooks
-    
-#CMD ["/sbin/tini", "-g", "--", "/srv/docker-entrypoint.sh"]
 
+# Copy Files for Ansible
 COPY files/hosts /etc/ansible/hosts
 COPY files/robot-playbook /etc/ansible/playbooks/robot-playbook
 
 # Download MISP DB Schema
-RUN mkdir -p /srv/misp_db_scheme; \
-    curl -o /srv/misp_db_scheme/v2.4.88_MYSQL.sql https://raw.githubusercontent.com/MISP/MISP/v2.4.88/INSTALL/MYSQL.sql; \
-    curl -o /srv/misp_db_scheme/v2.4.89_MYSQL.sql https://raw.githubusercontent.com/MISP/MISP/v2.4.89/INSTALL/MYSQL.sql;
+RUN mkdir -p /srv/misp_db_scheme; cd /srv/misp_db_scheme \
+    TAGS=$(git ls-remote --tags https://github.com/MISP/MISP.git|grep v2.4|sed 's,.*tags/v2.4.,,'|sed 's,\^.*$,,'|uniq) \ 
+    for i in $TAGS; do [[ "$i" -ge "88" ]] && curl -o v2.4.${i}_MYSQL.sql https://raw.githubusercontent.com/MISP/MISP/v2.4.${i}/INSTALL/MYSQL.sql; done \
+    unset TAGS
 
 # Add scripts and make it executable
 COPY files/scripts/* /srv/scripts/

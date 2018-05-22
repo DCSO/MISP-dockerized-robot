@@ -4,3 +4,4 @@ misp-server
 misp-proxy
 misp-robot
 misp-redis
+misp-postfix
