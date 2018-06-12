@@ -6,6 +6,12 @@
 help:
 	echo "Please use a command"
 
+
+.PHONY: build build-travis push-image test test-travis tags tags-travis
+
+help:
+	echo "Please use a command"
+
 test:
 	true
 

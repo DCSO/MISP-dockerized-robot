@@ -1,10 +1,12 @@
 # Supported tags and respective `Dockerfile` links
 
-- [`1.0.1-ubuntu`, `latest`][2]
+- [`1.0.2-ubuntu`, `latest`][3]
+- [`1.0.1-ubuntu`][2]
 - [`1.0.0-ubuntu`][1]
 
 [1]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.0-ubuntu/Dockerfile
 [2]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.1-ubuntu/Dockerfile
+[3]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.2-ubuntu/Dockerfile
 
 # Quick reference
 
@@ -38,7 +40,6 @@
 [105]: https://images.microbadger.com/badges/version/dcso/misp-robot.svg
 [106]: https://images.microbadger.com/badges/commit/dcso/misp-robot.svg
 [107]: https://microbadger.com/images/dcso/misp-robot
-
 
 
 # How to use this image
