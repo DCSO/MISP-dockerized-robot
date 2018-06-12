@@ -64,32 +64,16 @@ ENV LANG en_US.UTF-8
 RUN pip install --upgrade pip
 RUN pip3 install --upgrade pip
 
-# Deploy Deploy-Key
-#### ONLY NEEDED FOR ALPHA - REMOVE ON PRODUCTION #####
-RUN mkdir /root/.ssh
-WORKDIR /root/.ssh
-COPY files/deploy_key /root/.ssh/id_rsa
-COPY files/deploy_key.pub /root/.ssh/id_rsa.pub
-COPY files/known_hosts /root/.ssh/.
-RUN chmod 700 /root/.ssh
-RUN chmod 600 /root/.ssh/id_rsa
-RUN chmod 644 /root/.ssh/id_rsa.pub 
-RUN chmod 644 /root/.ssh/known_hosts
-
 # Setup Ansible
 RUN add-apt-repository ppa:ansible/ansible
 RUN apt-get update -y
 RUN apt-get install ansible -y
 
 RUN mkdir /etc/ansible/playbooks
-#CMD ["/sbin/tini", "-g", "--", "/srv/docker-entrypoint.sh"]
 
-COPY files/hosts /etc/ansible/hosts
 COPY files/robot-playbook /etc/ansible/playbooks/robot-playbook
 COPY files/configure_misp.sh /srv/configure_misp.sh
 RUN chmod +x /srv/configure_misp.sh
-#ADD files/ansible/MISP-ansible /etc/ansible/playbooks/MISP-ansible
-#RUN ansible-playbook -i "localhost," -c local /etc/ansible/playbooks/MISP-ansible/site.yml
 
 # Add Healthcheck Config
 HEALTHCHECK NONE
