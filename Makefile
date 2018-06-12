@@ -1,8 +1,7 @@
 #
 #	Makefile
 #
-
-.PHONY: help test test-travis build tags push install notify-hub-docker-com
+.PHONY: help test test-travis build tags push notify-hub-docker-com
 
 help:
 	echo "Please use a command"
