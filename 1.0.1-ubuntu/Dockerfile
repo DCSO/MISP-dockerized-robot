@@ -64,6 +64,7 @@ ENV LANG en_US.UTF-8
 RUN pip install --upgrade pip
 RUN pip3 install --upgrade pip
 
+
 # Setup Ansible
 RUN add-apt-repository ppa:ansible/ansible
 RUN apt-get update -y
