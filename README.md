@@ -1,12 +1,14 @@
 # Supported tags and respective `Dockerfile` links
 
-- [`1.0.2-ubuntu`, `latest`][3]
+- [`1.0.2-debian`, `latest`][4]
+- [`1.0.2-ubuntu`][3]
 - [`1.0.1-ubuntu`][2]
 - [`1.0.0-ubuntu`][1]
 
 [1]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.0-ubuntu/Dockerfile
 [2]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.1-ubuntu/Dockerfile
 [3]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.2-ubuntu/Dockerfile
+[4]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.2-debian/Dockerfile
 
 # Quick reference
 
