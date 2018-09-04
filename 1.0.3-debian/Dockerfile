@@ -130,4 +130,6 @@ ENV HTTPS_PROXY=""
 ENV NO_PROXY="0.0.0.0"
 
 # Environment Variable to check Version
-ENV VERSION=${VERSION}
+# Version + Name
+    ENV NAME ${NAME}
+    ENV VERSION ${VERSION}
