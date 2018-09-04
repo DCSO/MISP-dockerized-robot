@@ -46,14 +46,14 @@ build_1.0.2-ubuntu:
   - make tags
   - make push
 
-.build_1.0.2-debian:
+build_1.0.2-debian:
   stage: build
   script:
   - make build v=1.0.2-debian
   - make tags
   - make push
 
-.build_1.0.3-debian:
+build_1.0.3-debian:
   stage: build
     only: 
   - master
