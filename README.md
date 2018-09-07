@@ -1,12 +1,14 @@
 # Supported tags and respective `Dockerfile` links
 
-- [`1.0.2-ubuntu`, `latest`][3]
+- [`1.0.3-ubuntu`, `latest`][4]
+- [`1.0.2-ubuntu`][3]
 - [`1.0.1-ubuntu`][2]
 - [`1.0.0-ubuntu`][1]
 
 [1]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.0-ubuntu/Dockerfile
 [2]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.1-ubuntu/Dockerfile
 [3]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.2-ubuntu/Dockerfile
+[4]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.3-ubuntu/Dockerfile
 
 # Quick reference
 
@@ -36,10 +38,10 @@
 
 [101]: https://travis-ci.org/DCSO/MISP-dockerized-robot.svg?branch=master
 [102]: https://travis-ci.org/DCSO/MISP-dockerized-robot
-[104]: https://images.microbadger.com/badges/image/dcso/misp-robot.svg
-[105]: https://images.microbadger.com/badges/version/dcso/misp-robot.svg
-[106]: https://images.microbadger.com/badges/commit/dcso/misp-robot.svg
-[107]: https://microbadger.com/images/dcso/misp-robot
+[104]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-robot.svg
+[105]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-robot.svg
+[106]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-robot.svg
+[107]: https://microbadger.com/images/dcso/misp-dockerized-robot
 
 
 # How to use this image
