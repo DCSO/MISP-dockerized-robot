@@ -85,8 +85,8 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     apt-get clean -y
 
 # change language
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
+# RUN locale-gen en_US.UTF-8
+# ENV LANG en_US.UTF-8
 
 # Update PIP & PIP 3
 # + Install docker-py for docker ansible module
