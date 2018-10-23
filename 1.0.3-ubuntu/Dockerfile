@@ -53,6 +53,11 @@ LABEL   org.opencontainers.image.created="${BUILD_DATE}" \
 # + 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y; \
+    apt-get upgrade -y; \
+    apt-get autoremove -y; \ 
+    apt-get clean -y
+
+RUN apt-get update -y; \
     apt-get install -y \ 
         software-properties-common \
         rng-tools \
@@ -65,6 +70,11 @@ RUN apt-get update -y; \
         git \
         net-tools \
         iputils-ping \
+    apt-get autoremove -y; \ 
+    apt-get clean -y
+
+RUN apt-get update -y; \
+    apt-get install -y \         
         sudo \
         wget \
         locales \
@@ -82,7 +92,6 @@ RUN apt-get update -y; \
         zlib1g-dev \
         python-setuptools \
         ; \
-    apt-get upgrade -y; \
     apt-get autoremove -y; \ 
     apt-get clean -y
 
@@ -97,8 +106,8 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     apt-get clean -y
 
 # change language
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
+# RUN locale-gen en_US.UTF-8
+# ENV LANG en_US.UTF-8
 
 # Update PIP & PIP 3
 # + Install pyopen ssl for openssl ansible module
