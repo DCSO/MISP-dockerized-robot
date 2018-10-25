@@ -1,0 +1,4 @@
+build_ubuntu_1.0.0:
+  extends: .build
+  variables:
+    VERSION: 1.0.0

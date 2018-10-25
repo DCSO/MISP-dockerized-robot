@@ -1,0 +1,4 @@
+build_debian_1.0.3:
+  extends: .build
+  variables:
+    VERSION: "1.0.3-debian"

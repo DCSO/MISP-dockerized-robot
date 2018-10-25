@@ -22,52 +22,28 @@ before_script:
 - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
 #- make install
 
-
-build_1.0.0-ubuntu:
+.build:
   stage: build
   only: 
-  - master
+  - master  
   script:
-  - make build v=1.0.0-ubuntu
+  - make build v=$VERSION
   - make tags
   - make push
 
-build_1.0.1-ubuntu:
-  stage: build
-  script:
-  - make build v=1.0.1-ubuntu
-  - make tags
-  - make push
 
-build_1.0.2-ubuntu:
-  stage: build
-  script:
-  - make build v=1.0.2-ubuntu
-  - make tags
-  - make push
+include:
+  - '1.0.0-ubuntu/.gitlab-ci.yml'
+  - '1.0.1-ubuntu/.gitlab-ci.yml'
+  - '1.0.2-ubuntu/.gitlab-ci.yml'
+  - '1.0.2-debian/.gitlab-ci.yml'
+  - '1.0.3-ubuntu/.gitlab-ci.yml'
+  - '1.0.3-debian/.gitlab-ci.yml'
+  - '1.0.4-ubuntu/.gitlab-ci.yml'
+  - '1.0.4-debian/.gitlab-ci.yml'
 
-.build_1.0.2-debian:
-  stage: build
-  script:
-  - make build v=1.0.2-debian
-  - make tags
-  - make push
 
-.build_1.0.3-debian:
-  stage: build
-  script:
-  - make build v=1.0.3-debian
-  - make tags
-  - make push
-
-build_1.0.3-ubuntu:
-  stage: build
-  script:
-  - make build v=1.0.3-ubuntu
-  - make tags
-  - make push
-
-.upload_image_internal_registry:
+ .upload_image_internal_registry:
   stage: deploy
   only: 
   - master
