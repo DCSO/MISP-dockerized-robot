@@ -123,7 +123,7 @@ RUN apt-get update \
 RUN apt-get update -y; \
     apt-get install -y \         
         # python3 \
-        python3-pip \
+        python-pip \
         # openssl \
         # zip \
         # mariadb-client \
@@ -140,8 +140,8 @@ RUN apt-get update -y; \
 # Install:
 #+ docker-compose
 #+ pyopenssl for ansible openssl modules
-RUN pip3 --no-cache-dir install docker-compose \
-    ; pip3 --no-cache-dir install pyopenssl
+RUN pip --no-cache-dir install docker-compose \
+    ; pip --no-cache-dir install pyopenssl
 
 # Install git
 RUN apt-get update -y; \

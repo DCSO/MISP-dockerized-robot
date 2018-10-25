@@ -1,6 +1,10 @@
 # Supported tags and respective `Dockerfile` links
 
-- [`1.0.3-ubuntu`, `latest`][4]
+- [`1.0.4-debian`, `latest`][8]
+- [`1.0.4-ubuntu`][7]
+- [`1.0.3-debian`][6]
+- [`1.0.3-ubuntu`][5]
+- [`1.0.2-debian`][4]
 - [`1.0.2-ubuntu`][3]
 - [`1.0.1-ubuntu`][2]
 - [`1.0.0-ubuntu`][1]
@@ -8,7 +12,11 @@
 [1]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.0-ubuntu/Dockerfile
 [2]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.1-ubuntu/Dockerfile
 [3]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.2-ubuntu/Dockerfile
-[4]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.3-ubuntu/Dockerfile
+[4]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.2-debian/Dockerfile
+[5]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.3-ubuntu/Dockerfile
+[6]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.3-debian/Dockerfile
+[7]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.4-ubuntu/Dockerfile
+[8]: https://github.com/DCSO/MISP-dockerized-robot/blob/master/1.0.4-debian/Dockerfile
 
 # Quick reference
 
