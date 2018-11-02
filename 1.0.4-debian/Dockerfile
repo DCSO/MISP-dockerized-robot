@@ -106,7 +106,6 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
 
 # Setup Ansible
 # https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-apt-debian
-#RUN gpg --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367 | gpg --export 93C4A3FD7BB9C367 | apt-key add -\
 RUN curl -fsSL http://keyserver.ubuntu.com/pks/lookup?op=get\&search=0x93C4A3FD7BB9C367 | apt-key add - \ 
     ; apt-key fingerprint 93C4A3FD7BB9C367 \
     ; add-apt-repository "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" \
