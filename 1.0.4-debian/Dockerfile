@@ -1,4 +1,4 @@
-FROM debian:stable-slim
+FROM debian:stretch-slim
 
 #     Variables for Labels:
 ARG VENDOR="DCSO GmbH"
@@ -55,6 +55,7 @@ RUN apt-get update -y; \
         nano \
         sudo \
         make \
+        apt-utils \
         ;\
     apt-get autoremove -y; \ 
     apt-get clean -y
@@ -105,10 +106,11 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
 
 # Setup Ansible
 # https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-apt-debian
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367 \
+RUN curl -fsSL http://keyserver.ubuntu.com/pks/lookup?op=get\&search=0x93C4A3FD7BB9C367 | apt-key add - \ 
+    ; apt-key fingerprint 93C4A3FD7BB9C367 \
     ; add-apt-repository "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" \
     ; apt-get update \
-    ; apt-get -y install ansible \
+    ; apt-get -y --allow-unauthenticated install ansible \
     ; apt-get autoremove -y \
     ; apt-get clean -y \
     mkdir /etc/ansible/playbooks
