@@ -37,10 +37,10 @@ include:
   - '1.0.0-ubuntu/.gitlab-ci.yml'
   - '1.0.1-ubuntu/.gitlab-ci.yml'
   - '1.0.2-ubuntu/.gitlab-ci.yml'
-  - '1.0.2-debian/.gitlab-ci.yml'
+  #- '1.0.2-debian/.gitlab-ci.yml'
   - '1.0.3-ubuntu/.gitlab-ci.yml'
-  - '1.0.3-debian/.gitlab-ci.yml'
-  - '1.0.4-ubuntu/.gitlab-ci.yml'
+  #- '1.0.3-debian/.gitlab-ci.yml'
+  #- '1.0.4-ubuntu/.gitlab-ci.yml'
   - '1.0.4-debian/.gitlab-ci.yml'
 
 
