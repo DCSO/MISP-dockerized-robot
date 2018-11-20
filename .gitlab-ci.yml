@@ -34,6 +34,7 @@ before_script:
 
 
 include:
+  - '.legacy/.gitlab-ci.yml'
   - '1.0-ubuntu/.gitlab-ci.yml'
   - '1.1-ubuntu/.gitlab-ci.yml'
   - '1.2-ubuntu/.gitlab-ci.yml'

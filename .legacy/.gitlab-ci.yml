@@ -1,0 +1,24 @@
+build_debian_1.0.4:
+  extends: .build
+  variables:
+   VERSION: "1.0.4-debian"
+
+build_ubuntu_1.0.3:
+  extends: .build
+  variables:
+   VERSION: "1.0.3-ubuntu"
+
+build_ubuntu_1.0.2:
+  extends: .build
+  variables:
+   VERSION: "1.0.2-ubuntu"
+
+build_ubuntu_1.0.1:
+  extends: .build
+  variables:
+   VERSION: "1.0.1-ubuntu"
+
+build_ubuntu_1.0.0:
+  extends: .build
+  variables:
+   VERSION: "1.0.0-ubuntu"
