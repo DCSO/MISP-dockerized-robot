@@ -1,4 +1,0 @@
-build_ubuntu_1.0.2:
-  extends: .build
-  variables:
-    VERSION: "1.0.2-ubuntu"
