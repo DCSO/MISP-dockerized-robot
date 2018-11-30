@@ -1,0 +1,9 @@
+build 2.0-debian:
+  extends: .build
+  variables:
+    VERSION: "2.0-debian"
+
+test 2.0-debian:
+extends: .test
+variables:
+  VERSION: "2.0-debian"
