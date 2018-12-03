@@ -63,6 +63,7 @@ RUN apt-get update -y; \
 RUN apt-get update -y; \
     apt-get install -y \ 
         git \
+        mysql-client \
         ;\
     apt-get autoremove -y; \ 
     apt-get clean -y
