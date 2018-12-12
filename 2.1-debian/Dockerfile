@@ -152,11 +152,35 @@ RUN apt-get update -y; \
     apt-get autoremove -y; \ 
     apt-get clean -y
 
+
+# Install MISP-dockerized-testbench
+    ARG GIT_FOLDER="/srv/MISP-dockerized-testbench"
+
+    # apt-get is available (mostly debian or ubuntu)
+    RUN apt-get update; \
+        apt-get -y install sudo \
+            git \
+            bash \
+            make \
+            python3 \
+            python3-pip \
+            python3-venv \
+            mysql-client \
+            ; \
+            apt-get -y autoremove; \
+            apt-get -y clean
+
+    # clone the repository
+    RUN git clone https://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDER; \
+        pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt
+
+
+
 # Setup Workdir
 WORKDIR /srv
 
 # Add scripts
-COPY files/scripts /srv/
+COPY files/scripts /srv/scripts
 
 # Add Healthcheck Config
 HEALTHCHECK NONE
