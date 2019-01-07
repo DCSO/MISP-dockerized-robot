@@ -48,3 +48,4 @@ include:
   - '1.3-ubuntu/.gitlab-ci.yml'
   - '2.0-debian/.gitlab-ci.yml'
   - '2.1-debian/.gitlab-ci.yml'
+  - '2.2-debian/.gitlab-ci.yml'
