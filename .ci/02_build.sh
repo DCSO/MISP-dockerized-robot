@@ -1,6 +1,9 @@
 #!/bin/bash
-# Set an option to exit immediately if any error appears
-set -xe
+
+[ -z "$1" ] && echo "No parameter with the Docker registry URL. Exit now." && exit 1
+REGISTRY_URL="$1"
+VERSION="$2"
+ENVIRONMENT="$2"
 
 #################   MANUAL VARIABLES #################
 # path of the script
@@ -15,7 +18,7 @@ if [ -z $1 ] ;then
         FOLDER=( "${FOLDER[@]%/}" )
 else
     # build only the argumented one
-    FOLDER=$1
+    FOLDER="$VERSION"
 fi
 #########################################################
 
@@ -28,29 +31,27 @@ fi
 GIT_REPO_URL="https://github.com/$GIT_REPO"
 # Dockerifle Settings
 CONTAINER_NAME="$(echo $GIT_REPO|cut -d / -f 2|tr '[:upper:]' '[:lower:]')"
-DOCKER_REPO="dcso/$CONTAINER_NAME"
+DOCKER_REPO="$REGISTRY_URL/$CONTAINER_NAME"
 #########################################################
 
 for FOLD in ${FOLDER[@]}
 do  
-    #Find Out Version from folder
+    # Find Out Version from folder
     VERSION=$(echo $FOLD|cut -d- -f 1)
     DOCKERFILE_PATH="$SCRIPTPATH/../$FOLD"
-    # load Variables from configuration file
+    # Load Variables from configuration file
     source $DOCKERFILE_PATH/configuration.sh
-    ### Add -dev to tag if dev is set as a second argument
-    if [ "$2" == "prod" ]
+    # Default mode add "-dev" tag.
+    if [ "$ENVIRONMENT" == "prod" ]
     then
         # PROD Version
         TAGS="-t $DOCKER_REPO:$FOLD"
-        [ -z "$INTERNAL_REGISTRY_HOST" ] || TAGS+=" -t $INTERNAL_REGISTRY_HOST/$CONTAINER_NAME:$FOLD"
     else
         # DEV Version
         TAGS="-t $DOCKER_REPO:$FOLD-dev"
-        [ -z "$INTERNAL_REGISTRY_HOST" ] || TAGS+=" -t $INTERNAL_REGISTRY_HOST/$CONTAINER_NAME:$FOLD-dev"
     fi
     
-    # Default Build Args
+    # Default build args
     BUILD_ARGS+="
         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
         --build-arg NAME="$CONTAINER_NAME" \
@@ -58,7 +59,7 @@ do
         --build-arg VCS_REF=$(git rev-parse --short HEAD) \
         --build-arg VERSION="$VERSION" \
     "
-    # build container
+    # build image
     docker build \
             $BUILD_ARGS \
         -f $DOCKERFILE_PATH/$DOCKERFILE_NAME $TAGS $DOCKERFILE_PATH/

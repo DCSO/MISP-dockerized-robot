@@ -89,7 +89,10 @@ RUN apt-get update; apt-get -y install \
     ca-certificates \
     curl \
     gnupg2 \
-    software-properties-common ;\
+    software-properties-common \
+    python3-pip \
+    python3-setuptools \
+    ; \
     apt-get autoremove -y; \ 
     apt-get clean -y
 
@@ -102,20 +105,17 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
     apt-get autoremove -y; \
     apt-get clean -y
 
-# change language
-# RUN locale-gen en_US.UTF-8
-# ENV LANG en_US.UTF-8
 
-# Setup Ansible
-# https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-apt-debian
-RUN curl -fsSL http://keyserver.ubuntu.com/pks/lookup?op=get\&search=0x93C4A3FD7BB9C367 | apt-key add - \ 
-    ; apt-key fingerprint 93C4A3FD7BB9C367 \
-    ; add-apt-repository "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" \
-    ; apt-get update \
-    ; apt-get -y --allow-unauthenticated install ansible \
-    ; apt-get autoremove -y \
-    ; apt-get clean -y \
-    mkdir /etc/ansible/playbooks
+# # Setup Ansible
+# # https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-apt-debian
+# RUN curl -fsSL http://keyserver.ubuntu.com/pks/lookup?op=get\&search=0x93C4A3FD7BB9C367 | apt-key add - \ 
+#     ; apt-key fingerprint 93C4A3FD7BB9C367 \
+#     ; add-apt-repository "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" \
+#     ; apt-get update \
+#     ; apt-get -y --allow-unauthenticated install ansible \
+#     ; apt-get autoremove -y \
+#     ; apt-get clean -y \
+#     mkdir /etc/ansible/playbooks
 
 # Install dependencies for PIP3:
 # + Install python-pip3 for pip3
@@ -123,28 +123,21 @@ RUN curl -fsSL http://keyserver.ubuntu.com/pks/lookup?op=get\&search=0x93C4A3FD7
 # + libxml2-dev  for pyopenssl
 # + libxslt1-dev  for pyopenssl
 # + zlib1g-dev  for pyopenssl
-RUN apt-get update -y; \
-    apt-get install -y \         
-        # python3 \
-        python-pip \
-        # openssl \
-        # zip \
-        # mariadb-client \
-        # python-mysqldb \
-        # python-dev \
-        libxml2-dev \
-        libxslt1-dev \
-        zlib1g-dev \
-        # python-setuptools \
-        ; \
-    apt-get autoremove -y; \ 
-    apt-get clean -y
+# RUN apt-get update -y; \
+#     apt-get install -y \         
+#         # python-pip \
+#         # libxml2-dev \
+#         # libxslt1-dev \
+#         # zlib1g-dev \
+#         ; \
+#     apt-get autoremove -y; \ 
+#     apt-get clean -y
 
 # Install:
 #+ docker-compose
 #+ pyopenssl for ansible openssl modules
-RUN pip --no-cache-dir install docker-compose \
-    ; pip --no-cache-dir install pyopenssl
+RUN pip3 --no-cache-dir install docker-compose
+    #; pip3 --no-cache-dir install pyopenssl
 
 # Install git
 RUN apt-get update -y; \

@@ -27,9 +27,9 @@ echo "$START Install requirements..."
 
 
 # Set Git Options
-echo
-echo "$START Set Git options..."
-git config --global user.name "MISP-dockerized-bot"
+    echo
+    echo "$START Set Git options..."
+    git config --global user.name "MISP-dockerized-bot"
 
 
 # # Updating Docker configuration
@@ -49,4 +49,4 @@ git config --global user.name "MISP-dockerized-bot"
     echo "$START Docker login..."
     [ ! -z "$CUSTOM_REGISTRY_URL" -a ! -z "$CUSTOM_REGISTRY_USER" -a ! -z "$CUSTOM_REGISTRY_PW" ] && echo "$CUSTOM_REGISTRY_PW" | docker login -u "$CUSTOM_REGISTRY_USER" "$CUSTOM_REGISTRY_URL" --password-stdin;
     
-echo "$START before_install is finished."
+echo "$START $0 is finished."

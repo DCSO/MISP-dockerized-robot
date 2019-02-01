@@ -1,24 +1,43 @@
 #!/bin/bash
-# Set an option to exit immediately if any error appears
-set -xe
 
-# Docker Repo e.g. dcso/misp-dockerized-proxy
+[ -z "$1" ] && echo "No parameter with the Docker registry URL. Exit now." && exit 1
+[ -z "$2" ] && echo "No parameter with the Docker registry username. Exit now." && exit 1
+[ -z "$3" ] && echo "No parameter with the Docker registry password. Exit now." && exit 1
+
+REGISTRY_URL="$1"
+REGISTRY_USER="$2"
+REGISTRY_PW="$3"
+
+##################################
+
+# Find the right Docker Repo name e.g. dcso/misp-dockerized-proxy
 [ -z "$(git remote get-url origin|grep git@)" ] || GIT_REPO="$(git remote get-url origin|sed 's,.*:,,'|sed 's,....$,,')"
 [ -z "$(git remote get-url origin|grep http)" ] || GIT_REPO="$(git remote get-url origin|sed 's,.*github.com/,,'|sed 's,....$,,')"
-[ -z "$(echo $GIT_REPO|grep $GITLAB_HOST)" ] ||  GIT_REPO="$(git remote get-url origin|sed 's,.*'${GITLAB_HOST}'/'${GITLAB_GROUP}'/,,'|sed 's,....$,,')"
+if [ ! -z $GITLAB_HOST ]; then
+    [ -z "$(echo $GIT_REPO | grep $GITLAB_HOST)" ] ||  GIT_REPO="$(git remote get-url origin|sed 's,.*'${GITLAB_HOST}'/'${GITLAB_GROUP}'/,,'|sed 's,....$,,')"
+fi
 
+# Set Container Name in lower case
 CONTAINER_NAME="$(echo $GIT_REPO|cut -d / -f 2|tr '[:upper:]' '[:lower:]')"
 
-[ -z "$INTERNAL_REGISTRY_HOST" ] && DOCKER_REPO="dcso/$CONTAINER_NAME"
-[ -z "$INTERNAL_REGISTRY_HOST" ] || DOCKER_REPO="$INTERNAL_REGISTRY_HOST/$CONTAINER_NAME"
+# Set the right Docker Repository with the Docker registry URL
+DOCKER_REPO="$REGISTRY_URL/$CONTAINER_NAME"
 
-
-# Lookup to all build versions of the current docker container
+# Find all builded versions of the current Docker image
 ALL_BUILD_DOCKER_VERSIONS=$(docker images --format '{{.Repository}}={{.Tag}}'|grep $DOCKER_REPO|cut -d = -f 2)
 
+# Login to Docker registry
+DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
+echo $DOCKER_LOGIN_OUTPUT
+DOCKER_LOGIN_STATE="$(echo $DOCKER_LOGIN_OUTPUT | grep 'Login Succeeded')"
 
-
-for i in $ALL_BUILD_DOCKER_VERSIONS
-do
-    docker push $DOCKER_REPO:$i
-done
+if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
+    # Push all Docker images
+    for i in $ALL_BUILD_DOCKER_VERSIONS
+    do
+        echo "docker push $DOCKER_REPO:$i" && docker push $DOCKER_REPO:$i
+    done
+else
+    echo $DOCKER_LOGIN_OUTPUT
+    exit
+fi
