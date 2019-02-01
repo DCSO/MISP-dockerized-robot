@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -xv
-
 [ -z "$1" ] && echo "No parameter with the image version. Exit now." && exit 1
 [ "$1" == "dev" ] && echo "false first argument. Abort." && exit 1
 
@@ -47,9 +45,6 @@ GIT_REPO_URL="https://github.com/$GIT_REPO"
 # Dockerifle Settings
 CONTAINER_NAME="$(echo $GIT_REPO|cut -d / -f 2|tr '[:upper:]' '[:lower:]')"
 DOCKER_REPO="dcso/$CONTAINER_NAME"
-
-exit
-
 #########################################################
 
 echo "Start image building..."
