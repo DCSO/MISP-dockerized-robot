@@ -23,9 +23,19 @@ fi
 
 #################   AUTOMATIC VARIABLES #################
 # Find Out Git Hub Repository
-[ -z "$(git remote get-url origin|grep git@)" ] || GIT_REPO="$(git remote get-url origin|sed 's,.*:,,'|sed 's,....$,,')"
-[ -z "$(git remote get-url origin|grep http)" ] || GIT_REPO="$(git remote get-url origin|sed 's,.*github.com/,,'|sed 's,....$,,')"
-[ -z "$(echo $GIT_REPO|grep $GITLAB_HOST)" ] ||  GIT_REPO="$(git remote get-url origin|sed 's,.*'${GITLAB_HOST}'/'${GITLAB_GROUP}'/,,'|sed 's,....$,,')"
+if [ ! -z "$(git remote get-url origin|grep git@)" ]
+then
+    GIT_REPO="$(git remote get-url origin|sed 's,.*:,,'|sed 's,....$,,')"
+elif [ ! -z "$(git remote get-url origin|grep http)" ] 
+then
+    GIT_REPO="$(git remote get-url origin|sed 's,.*github.com/,,'|sed 's,....$,,')"
+elif [ ! -z "$(echo $GIT_REPO|grep $GITLAB_HOST)" ] 
+then
+    GIT_REPO="$(git remote get-url origin|sed 's,.*'${GITLAB_HOST}'/'${GITLAB_GROUP}'/,,'|sed 's,....$,,')"
+else
+    echo "Can not found the Git URL. Exit now."
+    exit 1
+fi
 
 GIT_REPO_URL="https://github.com/$GIT_REPO"
 # Dockerifle Settings
