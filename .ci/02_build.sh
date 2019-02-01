@@ -1,8 +1,7 @@
 #!/bin/bash
 
-[ -z "$1" ] && echo "No parameter with the Docker registry URL. Exit now." && exit 1
-REGISTRY_URL="$1"
-VERSION="$2"
+[ -z "$1" ] && echo "No parameter with the image version. Exit now." && exit 1
+VERSION="$1"
 ENVIRONMENT="$2"
 
 #################   MANUAL VARIABLES #################
@@ -31,7 +30,7 @@ fi
 GIT_REPO_URL="https://github.com/$GIT_REPO"
 # Dockerifle Settings
 CONTAINER_NAME="$(echo $GIT_REPO|cut -d / -f 2|tr '[:upper:]' '[:lower:]')"
-DOCKER_REPO="$REGISTRY_URL/$CONTAINER_NAME"
+DOCKER_REPO="dcso/$CONTAINER_NAME"
 #########################################################
 
 for FOLD in ${FOLDER[@]}

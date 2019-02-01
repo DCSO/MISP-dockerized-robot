@@ -41,12 +41,12 @@ before_script:
 
 
 include:
-  - '.legacy/.gitlab-ci.yml'
-  - '1.0-ubuntu/.gitlab-ci.yml'
-  - '1.1-ubuntu/.gitlab-ci.yml'
-  - '1.2-ubuntu/.gitlab-ci.yml'
-  - '1.3-ubuntu/.gitlab-ci.yml'
-  - '2.0-debian/.gitlab-ci.yml'
-  - '2.1-debian/.gitlab-ci.yml'
-  - '2.2-debian/.gitlab-ci.yml'
+  # - '.legacy/.gitlab-ci.yml'
+  # - '1.0-ubuntu/.gitlab-ci.yml'
+  # - '1.1-ubuntu/.gitlab-ci.yml'
+  # - '1.2-ubuntu/.gitlab-ci.yml'
+  # - '1.3-ubuntu/.gitlab-ci.yml'
+  # - '2.0-debian/.gitlab-ci.yml'
+  # - '2.1-debian/.gitlab-ci.yml'
+  # - '2.2-debian/.gitlab-ci.yml'
   - '2.3-debian/.gitlab-ci.yml'

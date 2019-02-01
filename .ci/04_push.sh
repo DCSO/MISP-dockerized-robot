@@ -27,7 +27,8 @@ DOCKER_REPO="$REGISTRY_URL/$CONTAINER_NAME"
 ALL_BUILD_DOCKER_VERSIONS=$(docker images --format '{{.Repository}}={{.Tag}}'|grep $DOCKER_REPO|cut -d = -f 2)
 
 # Login to Docker registry
-DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
+[ "$REGISTRY_URL" != "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
+[ "$REGISTRY_URL" == "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" --password-stdin)"
 echo $DOCKER_LOGIN_OUTPUT
 DOCKER_LOGIN_STATE="$(echo $DOCKER_LOGIN_OUTPUT | grep 'Login Succeeded')"
 
