@@ -32,7 +32,7 @@ env:
 
 
 before_install:
-- .ci/01_before_install.sh
+- sudo .ci/01_before_install.sh
 
 script:
 - make build v=${VERSION}
