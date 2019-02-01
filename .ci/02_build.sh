@@ -33,8 +33,8 @@ if [ ! -z "$(git remote get-url origin|grep git@)" ]
 then
     GIT_REPO="$(git remote get-url origin|sed 's,.*:,,'|sed 's,....$,,')"
 elif [ ! -z "$(git remote get-url origin|grep http)" ] 
-then
-    GIT_REPO="$(git remote get-url origin|sed 's,.*github.*/,,'|sed 's,....$,,')"
+then    
+    GIT_REPO="$(git remote get-url origin|sed 's,http*//.*/,,'|sed 's,....$,,')"
 elif [ ! -z "$(echo $GIT_REPO|grep $GITLAB_HOST)" ] 
 then
     GIT_REPO="$(git remote get-url origin|sed 's,.*'${GITLAB_HOST}'/'${GITLAB_GROUP}'/,,'|sed 's,....$,,')"
