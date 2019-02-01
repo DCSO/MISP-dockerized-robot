@@ -35,19 +35,22 @@ env:
 before_install:
 - sudo .ci/01_before_install.sh
 
+
 script:
 - make build v=${VERSION}
 - make tags REPO=$DOCKER_SLUG # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
 
+
 after_script:
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-# check if branch=master and the current build is no pull request, then push it to docker hub
-#- [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]] && make push;
-- if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
-    if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-      make push REPO=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
-    fi; 
-  fi;
+# - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+# # check if branch=master and the current build is no pull request, then push it to docker hub
+# #- [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]] && make push;
+# - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
+#     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
+#       make push REPO=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
+#     fi; 
+#   fi;
+
 
 after_success:
 # notify Docker Hub to make a new build

@@ -52,7 +52,7 @@ do
     
     # Default build args
     BUILD_ARGS+="
-        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%d)" \
         --build-arg NAME="$CONTAINER_NAME" \
         --build-arg GIT_REPO="$GIT_REPO_URL" \
         --build-arg VCS_REF=$(git rev-parse --short HEAD) \
