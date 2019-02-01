@@ -1,6 +1,10 @@
 #!/bin/bash
 
+set -xv
+
 [ -z "$1" ] && echo "No parameter with the image version. Exit now." && exit 1
+[ "$1" == "dev" ] && echo "false first argument. Abort." && exit 1
+
 VERSION="$1"
 ENVIRONMENT="$2"
 
@@ -10,7 +14,8 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 # dockerfile name:
 DOCKERFILE_NAME=Dockerfile
 # Which Folder the script should use
-[ "$1" == "dev" ] && echo "false first argument. Abort." && exit 1
+
+echo "Index all versions..."
 if [ -z $1 ] ;then
     	# build all you find
         FOLDER=( */)
@@ -23,6 +28,7 @@ fi
 
 #################   AUTOMATIC VARIABLES #################
 # Find Out Git Hub Repository
+echo "Set GIT_REPO..."
 if [ ! -z "$(git remote get-url origin|grep git@)" ]
 then
     GIT_REPO="$(git remote get-url origin|sed 's,.*:,,'|sed 's,....$,,')"
@@ -41,8 +47,12 @@ GIT_REPO_URL="https://github.com/$GIT_REPO"
 # Dockerifle Settings
 CONTAINER_NAME="$(echo $GIT_REPO|cut -d / -f 2|tr '[:upper:]' '[:lower:]')"
 DOCKER_REPO="dcso/$CONTAINER_NAME"
+
+exit
+
 #########################################################
 
+echo "Start image building..."
 for FOLD in ${FOLDER[@]}
 do  
     # Find Out Version from folder

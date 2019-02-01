@@ -44,9 +44,4 @@ echo "$START Install requirements..."
 #   sudo service docker restart
 
 
-# Set new Gitlab Repository
-    echo
-    echo "$START Docker login..."
-    [ ! -z "$CUSTOM_REGISTRY_URL" -a ! -z "$CUSTOM_REGISTRY_USER" -a ! -z "$CUSTOM_REGISTRY_PW" ] && echo "$CUSTOM_REGISTRY_PW" | docker login -u "$CUSTOM_REGISTRY_USER" "$CUSTOM_REGISTRY_URL" --password-stdin;
-    
 echo "$START $0 is finished."
