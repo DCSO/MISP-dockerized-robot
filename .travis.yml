@@ -1,15 +1,26 @@
-sudo: required
-services: docker
+dist: xenial
+addons:
+  apt:
+    sources:
+      - docker-xenial
 
 env:
   global:
-  # Docker Username
-  - secure: "iFIZ02XsPHv49u0hNtUfplsI9h3GZ0H8NeM5IR9A20HQ7OINNnuiiYGUVDwwUpLNGzYdUpJTTzFLMV0khOo4MDSfgoOyGvSYf8ojbCod1mdAdzNLcfrlbA62oexpuhkTZIf7rCISAyso4mc0qJ5r60IZNdvRhioIIiHlD/w/sHqXqIkOVK81AGQBuqQNqLLIPz0b5scmhdQIT6eDeswB9yKCRIOMLH1GgNch/e3Ft9pA152gtLiMnhL7SA3ITwM6y4sNHQAUdXB0iwcEQkaHJRqOhxyQRsSX+V9XZ71aLXLt7vPksbOuNuoT2TKFwqljJ2hC4ZtESYw5gep6++Fr/1BZCoxUiuBG4+h1V36bWVIARqpo7wZhsQCkuwh23LP+AzLOLAKTYDsR2JhrWLySn+/lNaPCNPDbsSA+kJGAsU0Gz5fss5blpqgRxFUHBJf6kA++D7fOA2n/dOtSwVBYeOA1ZuQeSWQ9sLqkAnbSa2gBRIdfaDbxEg8eZoSRlXmCF+L5jU5/WjvVmmaeaRYfpYITx0ctIXiflqsfdnjXU2QxMm1gvYhepb0A0ZKh55RhW+sv47RWjNSc7wdwIfTQB5xQDz1IM4/ijcAcxTN8ZSPapy3EK5vcgJPCIEo53m+LzFCMbAYPcSSIoYBsCwsSCLbZVj4X4YJndjOT/C84TP4="
-  # Docker Password
-  - secure: "dp1+oiM+n892ezSxnEhjA6PCOt7CKeQeuh4Ir6+n8DLRv/udzCOhvvi3qK1tjZ8Fb77MeRtjWYsg+iCjg8d1S3BRMWfUlVRLcTAfCTsMaOzXKwcrVcOcvVuAsr57kS+DCePjQmwd/urXHBkDAzwzuMJHBMEgW5ZUZCONj2T4+SOKC2lTAC7UAH/qYfyTNzUmU7DZgq5ucs4UcK1YYNGEayMNAn+9J8u+7wGk8XuXI249REvW77mCipGJtaAgvHFG0LaHg8qQV6UBKABFaRnTR+pnYxlAKWZ0TCmy+8gnsW5l5u+ABU8jaqU62TbIc3bLwi9syuQWLnOE0E99mK2abT4ZgfsLkqNMpXhD5NpX8ujmjY1SPUq0EM358A6RUqf7qrB3eKgjgtMtiZQq8i34fw0x+g7lCRNN4z3G+d23YfdLavUr9w7SwMgXS9Gtj9pHpIKSZ9L41zrW60KKCcPocEUYAH/cQHTawkMtSeLl1+ZfjvGyoOGd0yLxgQDm+ay56iO6tyZ9K+UARcIZeaEA2ktXFx5bZW+XU6KTRsAOXNy1Sd5okws/bCTK7369eNaG+6TQipL7DWIpjZHtCwPqMA9MezHi07x09BJOevf9Du2tsq05Z1kgb/88dOc3abgpxjHemBlhYuM3b40lUNkJALwSfssY2ctbw0tiZCOjlWg="
   # Docker Hub Token
   - secure: "peqZoxwLJdsMjo3Mrs4eQEo3JgLS4boZNgv1AypqeKosc2oKsYSSoDF6bFnqwuf/giOZ2btjca+v9Ij+w1yIYzLY66BepBbEKxCvtmxX8bZDuu0stgEyXyinSnxRZFbSKdcRq9pY3dsg/lu3izgPwwT69i5UBJsSa+CWrnUK9h3zC03sgpaeLPX9bTEc9+ABGuFjMN4rskBqOnM890QDt2m7X5asKk+xo3ege88os7LZwTd1tStk5xnoRaSHgeNpNFa8WA/L6bF2HQDd48fpe97jVofRCfnDZRDoqnJvTscQi9fMEKoDiVcV/PgAPsfhP41cw4f2inmJc+KCRnCkuRsnmOfNUJebvbIvGLmgxlwIyQXEKzdTeznC/TI+y5eZFu5SoW3n4gOmolrOM1JD9bFrEanKVpVA40K+OkhlyFmP98iwhD3Wg2ZonMNACvEKlG14hreZ9MBxWOtGnz2E49x6CM9zz9jKPJM9ye/wYj3XGFL7mCPuyrrH3iBwkeYwjJZD2fCgMbWz2Ji14DK6HVQV+fA7UXMYzf18J31YRL/gNg5LAkZcuDvvaHM/cX1i7M02iObpLEr0Ytqwozn7giACf3Pz1r3rzxziT/z6OLaqD5SXQRRaIJFyVMM3uixOy+3H7DnNQHu/wrADGaFdSKZCCLdQYsRK7uEPa0J0scI="
+  # The following variables are setup via project settings:
+  # DOCKER_HUB_TOKEN
+  # DOCKER_SLUG
+  # DOCKER_USERNAME
+  # DOCKER_PASSWORD
   matrix:
+  # legacy
+  - VERSION=1.0.0-ubuntu
+  - VERSION=1.0.1-ubuntu
+  - VERSION=1.0.2-ubuntu
+  - VERSION=1.0.3-ubuntu
+  - VERSION=1.0.4-debian
+  ######################### 
   - VERSION=1.0-ubuntu
   - VERSION=1.1-ubuntu
   - VERSION=1.2-ubuntu
@@ -17,39 +28,36 @@ env:
   - VERSION=2.0-debian
   - VERSION=2.1-debian
   - VERSION=2.2-debian
-  # legacy
-  - VERSION=1.0.0-ubuntu
-  - VERSION=1.0.1-ubuntu
-  - VERSION=1.0.2-ubuntu
-  - VERSION=1.0.3-ubuntu
-  - VERSION=1.0.4-debian
+  - VERSION=2.3-debian
+  
 
 
 before_install:
-- make install
+- sudo .ci/01_before_install.sh
+
 
 script:
-- travis_retry make build v=${VERSION}
-- make tags
+- make build v=${VERSION}
+- make tags REPO=$DOCKER_SLUG # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
+
 
 after_script:
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-# check if branch=master and the current build is no pull request, then push it to docker hub
-#- [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]] && make push;
-- if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
-    if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-      make push;
-    fi; 
-  fi;
+# # check if branch=master and the current build is no pull request, then push it to docker hub
+# #- [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]] && make push;
+# - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
+#     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
+#       make push REPO=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
+#     fi; 
+#   fi;
+
 
 after_success:
 # notify Docker Hub to make a new build
-#- [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]] && make notify-hub-docker-com TOKEN=$DOCKER_HUB_TOKEN
-- if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
-    if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-      make notify-hub-docker-com TOKEN=$DOCKER_HUB_TOKEN
-    fi; 
-  fi
+# - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
+#     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
+#       make notify-hub-docker-com TOKEN=$DOCKER_HUB_TOKEN
+#     fi; 
+#   fi
 
 # don't notify me when things fail
 notifications:

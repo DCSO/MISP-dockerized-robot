@@ -1,25 +1,24 @@
 #
 #	Makefile
 #
-.PHONY: help test-travis build tags push install notify-hub-docker-com
+.PHONY: help build tags push notify-hub-docker-com
 
 help:
-	echo "Please use a command"
-
-test-travis:
-	.travis/travis-cli.sh check
+	@echo -e "Please use a command: \n \
+		make build v=<2.3-debian> dev=true \n \
+		make tags $(REPO) \n \
+		make push $(REPO) $(USER) $(PW) \n \
+		make notify-hub.docker.com TOKEN=<TOKEN> \n \
+	"
 
 build:
-	.travis/build.sh $(v) $(dev)
+	@bash .ci/02_build.sh $(v) $(dev)
 
 tags:
-	.travis/tagging.sh
+	@bash .ci/03_tagging.sh $(REPO)
 
 push:
-	.travis/push.sh
-
-install:
-	.travis/main.sh
+	@bash .ci/04_push.sh $(REPO) $(USER) $(PW)
 
 notify-hub-docker-com:
-	.travis/notify_hub.docker.com.sh $(TOKEN)
+	@bash .ci/05_notify_hub.docker.com.sh $(TOKEN)
