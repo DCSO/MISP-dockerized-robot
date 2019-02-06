@@ -34,12 +34,12 @@ before_script:
   - master  
   script:
   - make -C .ci  build v=$VERSION   # build an dcso/CONTAINERNAME image
-  - make -C .ci  tags REPO=$DOCKER_SLUG # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
-  - make -C .ci  tags REPO=$CUSTOM_REGISTRY_URL # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
-  - make -C .ci  push REPO=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
-  - make -C .ci  push REPO=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
+  - make -C .ci  tags REPOURL=$DOCKER_SLUG # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
+  - make -C .ci  tags REPOURL=$CUSTOM_REGISTRY_URL # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
+  - make -C .ci  push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
+  - make -C .ci  push REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
   #- make -C .ci  notify-hub-docker-com TOKEN=$DOCKER_HUB_TOKEN
-  
+
 include:
   - '.legacy/.gitlab-ci.yml'
   - '1.0-ubuntu/.gitlab-ci.yml'

@@ -38,7 +38,7 @@ before_install:
 
 script:
 - make -C .ci  build v=${VERSION}
-- make -C .ci  tags REPO=$DOCKER_SLUG # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
+- make -C .ci  tags REPOURL=$DOCKER_SLUG # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
 
 
 after_script:
