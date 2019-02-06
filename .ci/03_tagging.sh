@@ -1,6 +1,14 @@
 #!/bin/bash
+STARTMSG="[tagging]"
+
+[ -z "$1" ] && echo "$STARTMSG No parameter with the image version. Exit now." && exit 1
+[ "$1" == "true" ] && echo "$STARTMSG False first argument. Abort." && exit 1
 
 REGISTRY_URL="$1"
+if [[ "$2" == "true" ]]; then ENVIRONMENT="prod"; fi;
+
+# change directory to the top level:
+pushd ..
 
 # Docker Repo e.g. dcso/misp-dockerized-proxy
 [ -z "$(git remote get-url origin|grep git@)" ] || GIT_REPO="$(git remote get-url origin|sed 's,.*:,,'|sed 's,....$,,')"
@@ -11,11 +19,12 @@ REGISTRY_URL="$1"
 CONTAINER_NAME="$(echo $GIT_REPO|cut -d / -f 2|tr '[:upper:]' '[:lower:]')"
 
 # Show Images before tagging
-echo  "### Show images before tagging:"
+echo  "$STARTMSG ### Show images before tagging:"
 docker images | grep $CONTAINER_NAME
 
 # Set Docker Repository
 DOCKER_REPO="$REGISTRY_URL/$CONTAINER_NAME"
+SOURCE_REPO="not2push"
 
 # Search the latest image
     # Create the Array
@@ -62,22 +71,49 @@ do
     BASE=$(echo $i|cut -d- -f 2)                    # for example ubuntu
     MAJOR_VERSION="$(echo $i|cut -d . -f 1)"        # for example 1
 
-    # Add custom Docker registry URL
-    [ "$REGISTRY_URL" != "dcso" ] && docker tag dcso/$CONTAINER_NAME:$i $DOCKER_REPO:$i
+    # Remove '-dev' tag
+    if [ "$ENVIRONMENT" == "prod" ]; then
+        #
+        #   If prod=true, ~ prodcutin ready image
+        #
 
-    # Add latest tag
-    [ "$VERSION" == "$LATEST" ] && docker tag dcso/$CONTAINER_NAME:$i dcso/$CONTAINER_NAME:latest-dev
-    [ "$REGISTRY_URL" != "dcso" ] && [ "$VERSION" == "$LATEST" ] && docker tag dcso/$CONTAINER_NAME:$i $DOCKER_REPO:latest-dev
+        # Add custom Docker registry tag
+        docker tag $SOURCE_REPO/$CONTAINER_NAME:$i $DOCKER_REPO:$VERSION-$BASE
+
+        # Add latest tag
+        if [ "$VERSION" == "$LATEST" ]; then
+            docker tag $SOURCE_REPO/$CONTAINER_NAME:$i $DOCKER_REPO:latest
+        fi
+
+        # Add latest Major Version Tag
+        for k in ${MAJOR_LATEST[@]}
+        do
+            CURRENT_MAJOR_VERSION="$(echo $k|cut -d . -f 1)"
+            [ "$i" == $k"-dev" ] && docker tag $SOURCE_REPO/$CONTAINER_NAME:$i $DOCKER_REPO:$CURRENT_MAJOR_VERSION
+        done
+    else
+        #
+        #   Add '-dev' tag
+        #   
     
-    # Add latest Major Version Tag
-    for k in ${MAJOR_LATEST[@]}
-    do
-        CURRENT_MAJOR_VERSION="$(echo $k|cut -d . -f 1)"
-        [ "$REGISTRY_URL" != "dcso" ] && [ "$i" == $k"-dev" ] && docker tag dcso/$CONTAINER_NAME:$i dcso/$CONTAINER_NAME:$CURRENT_MAJOR_VERSION-dev
-        [ "$i" == $k"-dev" ] && docker tag dcso/$CONTAINER_NAME:$i $DOCKER_REPO:$CURRENT_MAJOR_VERSION-dev
-    done
+        # Add custom Docker registry tag
+        docker tag $SOURCE_REPO/$CONTAINER_NAME:$i $DOCKER_REPO:$VERSION-$BASE-dev
+        
+        # Add latest tag
+        if [ "$VERSION" == "$LATEST" ]; then
+            docker tag $SOURCE_REPO/$CONTAINER_NAME:$i $DOCKER_REPO:latest-dev
+        fi
 
+        # Add latest Major Version Tag
+        for k in ${MAJOR_LATEST[@]}
+        do
+            CURRENT_MAJOR_VERSION="$(echo $k|cut -d . -f 1)"
+            [ "$i" == $k"-dev" ] && docker tag $SOURCE_REPO/$CONTAINER_NAME:$i $DOCKER_REPO:$CURRENT_MAJOR_VERSION-dev
+        done
+    fi
 done
 
-echo  "### Show images after tagging:"
-docker images | grep $CONTAINER_NAME
+echo  "$STARTMSG ### Show images after tagging:"
+docker images | grep $DOCKER_REPO
+
+echo "$STARTMSG $0 is finished."

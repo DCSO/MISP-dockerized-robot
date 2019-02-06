@@ -1,8 +1,10 @@
 #!/bin/bash
+STARTMSG="[push]"
 
-[ -z "$1" ] && echo "No parameter with the Docker registry URL. Exit now." && exit 1
-[ -z "$2" ] && echo "No parameter with the Docker registry username. Exit now." && exit 1
-[ -z "$3" ] && echo "No parameter with the Docker registry password. Exit now." && exit 1
+[ -z "$1" ] && echo "$STARTMSG No parameter with the Docker registry URL. Exit now." && exit 1
+[ "$1" == "NOT2PUSH" ] && echo "$STARTMSG The NOT2PUSH slug is only for local build and retag not for pushin to docker registries. Exit now." && exit 1
+[ -z "$2" ] && echo "$STARTMSG No parameter with the Docker registry username. Exit now." && exit 1
+[ -z "$3" ] && echo "$STARTMSG No parameter with the Docker registry password. Exit now." && exit 1
 
 REGISTRY_URL="$1"
 REGISTRY_USER="$2"
@@ -36,9 +38,11 @@ if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
     # Push all Docker images
     for i in $ALL_BUILD_DOCKER_VERSIONS
     do
-        echo "docker push $DOCKER_REPO:$i" && docker push $DOCKER_REPO:$i
+        echo "$STARTMSG docker push $DOCKER_REPO:$i" && docker push $DOCKER_REPO:$i
     done
 else
     echo $DOCKER_LOGIN_OUTPUT
     exit
 fi
+
+echo "$STARTMSG $0 is finished."

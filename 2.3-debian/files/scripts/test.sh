@@ -21,7 +21,9 @@ do
     [ -z "$(docker logs misp-server 2>&1 | grep "$MSG")" ] || break
     [ -z "$(docker logs misp-server 2>&1 | grep "$LEGACY_MSG")" ] || break
     #wait x seconds
-    echo "$STARTMSG `date +%T` -  wait until misp-server is ready." && sleep $i
+    echo "$STARTMSG `date +%T` -  wait until misp-server is ready. sleep $i seconds..."
+    docker logs --tail 10 misp-server
+    sleep $i
     (( i=i+5 ))
 done
 

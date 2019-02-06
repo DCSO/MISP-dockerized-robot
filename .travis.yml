@@ -37,8 +37,8 @@ before_install:
 
 
 script:
-- make build v=${VERSION}
-- make tags REPO=$DOCKER_SLUG # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
+- make -C .ci  build v=${VERSION}
+- make -C .ci  tags REPO=$DOCKER_SLUG # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
 
 
 after_script:
@@ -46,7 +46,7 @@ after_script:
 # #- [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]] && make push;
 # - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
 #     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-#       make push REPO=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
+#       make -C .ci  push REPO=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
 #     fi; 
 #   fi;
 
@@ -55,7 +55,7 @@ after_success:
 # notify Docker Hub to make a new build
 # - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
 #     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-#       make notify-hub-docker-com TOKEN=$DOCKER_HUB_TOKEN
+#       make -C .ci  notify-hub-docker-com TOKEN=$DOCKER_HUB_TOKEN
 #     fi; 
 #   fi
 

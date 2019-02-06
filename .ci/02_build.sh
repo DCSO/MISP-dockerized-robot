@@ -1,7 +1,8 @@
 #!/bin/bash
+STARTMSG="[build]"
 
-[ -z "$1" ] && echo "No parameter with the image version. Exit now." && exit 1
-[ "$1" == "dev" ] && echo "false first argument. Abort." && exit 1
+[ -z "$1" ] && echo "$STARTMSG No parameter with the image version. Exit now." && exit 1
+[ "$1" == "dev" ] && echo "$STARTMSG False first argument. Abort." && exit 1
 
 VERSION="$1"
 ENVIRONMENT="$2"
@@ -13,7 +14,7 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 DOCKERFILE_NAME=Dockerfile
 # Which Folder the script should use
 
-echo "Index all versions..."
+echo "$STARTMSG Index all versions..."
 if [ -z $1 ] ;then
     	# build all you find
         FOLDER=( */)
@@ -26,7 +27,7 @@ fi
 
 #################   AUTOMATIC VARIABLES #################
 # Find Out Git Hub Repository
-echo "Set GIT_REPO..."
+echo "$STARTMSG Set GIT_REPO..."
 if [ ! -z "$(git remote get-url origin|grep git@)" ]
 then
     GIT_REPO="$(git remote get-url origin|sed 's,.*:,,'|sed 's,....$,,')"
@@ -44,10 +45,10 @@ fi
 GIT_REPO_URL="https://github.com/$GIT_REPO"
 # Dockerifle Settings
 CONTAINER_NAME="$(echo $GIT_REPO|cut -d / -f 2|tr '[:upper:]' '[:lower:]')"
-DOCKER_REPO="dcso/$CONTAINER_NAME"
+DOCKER_REPO="not2push/$CONTAINER_NAME"
 #########################################################
 
-echo "Start image building..."
+echo "$STARTMSG Start image building..."
 for FOLD in ${FOLDER[@]}
 do  
     # Find Out Version from folder
@@ -56,7 +57,7 @@ do
     # Load Variables from configuration file
     source $DOCKERFILE_PATH/configuration.sh
     # Default mode add "-dev" tag.
-    if [ "$ENVIRONMENT" == "prod" ]
+    if [ "$ENVIRONMENT" == "true" ]
     then
         # PROD Version
         TAGS="-t $DOCKER_REPO:$FOLD"
@@ -78,3 +79,5 @@ do
             $BUILD_ARGS \
         -f $DOCKERFILE_PATH/$DOCKERFILE_NAME $TAGS $DOCKERFILE_PATH/
 done
+
+echo "$STARTMSG $0 is finished."
