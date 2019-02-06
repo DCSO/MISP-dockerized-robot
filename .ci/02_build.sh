@@ -7,6 +7,7 @@ STARTMSG="[build]"
 VERSION="$1"
 if [[ "$2" == "true" ]]; then ENVIRONMENT="prod"; fi;
 
+
 #################   MANUAL VARIABLES #################
 # path of the script
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"

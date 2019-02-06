@@ -39,6 +39,7 @@ if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
     for i in $ALL_BUILD_DOCKER_VERSIONS
     do
         echo "$STARTMSG docker push $DOCKER_REPO:$i" && docker push $DOCKER_REPO:$i
+
     done
 else
     echo $DOCKER_LOGIN_OUTPUT

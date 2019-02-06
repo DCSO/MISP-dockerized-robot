@@ -47,8 +47,6 @@ after_script:
 # - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
 #     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
 #       make -C .ci  push REPO=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
-#     fi; 
-#   fi;
 
 
 after_success:

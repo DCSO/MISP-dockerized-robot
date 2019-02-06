@@ -28,3 +28,4 @@ DOCKER_REPO="$DOCKER_SLUG/$(echo $GIT_REPO|cut -d / -f 2|tr '[:upper:]' '[:lower
 curl -X POST -H "Content-Type: application/json"  --data '{"docker_tag_name": "hub_automatic_untested"}'  https://registry.hub.docker.com/u/$DOCKER_REPO/trigger/$TOKEN/
 
 echo "$STARTMSG $0 is finished."
+

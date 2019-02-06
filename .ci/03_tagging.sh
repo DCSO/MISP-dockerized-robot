@@ -117,3 +117,4 @@ echo  "$STARTMSG ### Show images after tagging:"
 docker images | grep $DOCKER_REPO
 
 echo "$STARTMSG $0 is finished."
+
