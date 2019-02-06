@@ -5,7 +5,7 @@ STARTMSG="[build]"
 [ "$1" == "dev" ] && echo "$STARTMSG False first argument. Abort." && exit 1
 
 VERSION="$1"
-ENVIRONMENT="$2"
+if [[ "$2" == "true" ]]; then ENVIRONMENT="prod"; fi;
 
 #################   MANUAL VARIABLES #################
 # path of the script
@@ -57,7 +57,7 @@ do
     # Load Variables from configuration file
     source $DOCKERFILE_PATH/configuration.sh
     # Default mode add "-dev" tag.
-    if [ "$ENVIRONMENT" == "true" ]
+    if [ "$ENVIRONMENT" == "prod" ]
     then
         # PROD Version
         TAGS="-t $DOCKER_REPO:$FOLD"
