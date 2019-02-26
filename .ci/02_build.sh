@@ -35,7 +35,7 @@ then
 elif [ ! -z "$(git remote get-url origin|grep http)" ] 
 then    
     GIT_REPO="$(git remote get-url origin|sed 's,http.*//.*/,,'|sed 's,....$,,')"
-elif [ ! -z "$(echo $GIT_REPO|grep $GITLAB_HOST)" ] 
+elif [ ! -z "$(echo "$GIT_REPO"|grep "$GITLAB_HOST")" ] 
 then
     GIT_REPO="$(git remote get-url origin|sed 's,.*'${GITLAB_HOST}'/'${GITLAB_GROUP}'/,,'|sed 's,....$,,')"
 else
@@ -45,7 +45,7 @@ fi
 
 GIT_REPO_URL="https://github.com/$GIT_REPO"
 # Dockerifle Settings
-CONTAINER_NAME="$(echo $GIT_REPO|cut -d / -f 2|tr '[:upper:]' '[:lower:]')"
+CONTAINER_NAME="$(echo "$GIT_REPO"|cut -d / -f 2|tr '[:upper:]' '[:lower:]')"
 DOCKER_REPO="not2push/$CONTAINER_NAME"
 #########################################################
 
@@ -56,7 +56,7 @@ do
     VERSION=$(echo $FOLD|cut -d- -f 1)
     DOCKERFILE_PATH="$SCRIPTPATH/../$FOLD"
     # Load Variables from configuration file
-    source $DOCKERFILE_PATH/configuration.sh
+    source "$DOCKERFILE_PATH/configuration.sh"
     # Default mode add "-dev" tag.
     if [ "$ENVIRONMENT" == "prod" ]
     then
@@ -78,7 +78,7 @@ do
     # build image
     docker build \
             $BUILD_ARGS \
-        -f $DOCKERFILE_PATH/$DOCKERFILE_NAME $TAGS $DOCKERFILE_PATH/
+        -f "$DOCKERFILE_PATH/$DOCKERFILE_NAME" $TAGS "$DOCKERFILE_PATH"/
 done
 
 echo "$STARTMSG $0 is finished."

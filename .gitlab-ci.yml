@@ -9,14 +9,13 @@ stages:
 
 variables:
   # The following variables are setup via gitlab project group:
-  # DOCKER_HUB_TOKEN
+  # DOCKER_HUB_NOTIFY_URL
   # DOCKER_SLUG
   # DOCKER_USERNAME
   # DOCKER_PASSWORD
   # CUSTOM_REGISTRY_URL
   # CUSTOM_REGISTRY_USER
   # CUSTOM_REGISTRY_PW
-  DOCKER_DRIVER: overlay2
 
 before_script:
 - .ci/01_before_install.sh
@@ -26,20 +25,25 @@ before_script:
   except: 
   - master  
   script:
-  - make -C .ci  build v=$VERSION # build an dcso/CONTAINERNAME image
+  - make -C .ci build v=$VERSION
 
 .build:
   stage: build
   only: 
-  - master  
+  - master
+  - feat/MDD-188
   script:
-  - make -C .ci  build v=$VERSION   # build an dcso/CONTAINERNAME image
-  - make -C .ci  tags REPOURL=$DOCKER_SLUG # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
-  - make -C .ci  tags REPOURL=$CUSTOM_REGISTRY_URL # tagged dcso/CONTAINERNAME + custom-URL/CONTAINERNAME
-  - make -C .ci  push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
-  - make -C .ci  push REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
-  #- make -C .ci  notify-hub-docker-com TOKEN=$DOCKER_HUB_TOKEN
+  - make -C .ci build v=$VERSION 
+  - make -C .ci tags REPO=$CUSTOM_REGISTRY_URL
+  - make -C .ci tags REPO=$DOCKER_SLUG
+  - make -C .ci push REPO=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
+  - make -C .ci push REPO=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
+  - make -C .ci notify-hub-docker-com URL=$DOCKER_HUB_NOTIFY_URL
 
+
+#
+# For a cleaner Gitlab CI file include all subfolder which should be build:
+#
 include:
   - '.legacy/.gitlab-ci.yml'
   - '1.0-ubuntu/.gitlab-ci.yml'
@@ -50,3 +54,4 @@ include:
   - '2.1-debian/.gitlab-ci.yml'
   - '2.2-debian/.gitlab-ci.yml'
   - '2.3-debian/.gitlab-ci.yml'
+  - '2.4-debian/.gitlab-ci.yml'
