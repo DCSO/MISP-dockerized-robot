@@ -67,6 +67,8 @@ def migrate_taxonomies(misp_new,misp_old):
              misp_new.enable_taxonomy(TAXONOMY.get('Taxonomy').get('id'))
     input("Press Enter to continue...")
 
+
+
 def migrate_events(START_EVENT_ID,END_EVENT_ID,misp_new,misp_old):
     #
     #   Migrate Events from old to new Instance
@@ -76,6 +78,7 @@ def migrate_events(START_EVENT_ID,END_EVENT_ID,misp_new,misp_old):
          tmp_event = misp_old.get_event(EVENT)
          print(EVENT)
          misp_new.add_event(tmp_event)
+    input("Press Enter to continue...")
     
 
 if __name__ == '__main__':
@@ -93,7 +96,10 @@ if __name__ == '__main__':
 
     # Migrate taxonomies
     migrate_taxonomies(misp_new,misp_old)
-    
+    print('Please enable the required Tags by Hand!')
+    input("Press Enter to continue...")
+
+
     # Migrate Events
     migrate_events(1,1227,misp_new,misp_old)
     

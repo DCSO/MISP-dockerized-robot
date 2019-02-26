@@ -10,54 +10,14 @@ MODE="$1"
 [ -z "$MYSQL_DATABASE" ] && MYSQL_DATABASE="misp"
 
 DATE="$(date +%Y-%m-%d_%H)" #-%M)"
-TABLES="event_blacklists event_delegations event_graph event_locks event_tags events \
-    galaxies galaxy_clusters galaxy_elements galaxy_reference \
-    object_references object_relationships object_template_elements object_templates objects \
-    template_element_attributes template_element_files template_element_texts template_elements template_tags templates \
-    taxonomies taxonomy_entries taxonomy_predicates \
-    correlations \
+TABLES="attribute_tags attributes \
+        event_blacklists event_delegations event_graph event_locks event_tags events \
+        object_references object_relationships objects \
+        org_blacklists \
+        organisations \
+        shadow_attribute_correlations shadow_attributes \
+        template_element_attributes template_element_files template_element_texts template_elements template_tags templates \
     "
-
-# | bruteforces                   |
-# | cake_sessions                 |
-
-#  admin_settings                |
-# | attribute_tags                |
-# | attributes                    |
-# | correlations                  |
-# | favourite_tags                |
-# | feeds                         |
-# | fuzzy_correlate_ssdeep        |
-# | jobs                          |
-# | logs                          |
-# | news                          |
-# | noticelist_entries            |
-# | noticelists                   |
-# | org_blacklists                |
-# | organisations                 |
-# | posts                         |
-# | regexp                        |
-# | roles                         |
-# | servers                       |
-# | shadow_attribute_correlations |
-# | shadow_attributes             |
-# | sharing_group_orgs            |
-# | sharing_group_servers         |
-# | sharing_groups                |
-# | sightings                     |
-# | tags                          |
-# | tasks                         |
-
-
-# threads
-# threat_levels
-# user_settings
-# users
-# warninglist_entries
-# warninglist_types
-# warninglists
-# whitelist
-
 
 if [ "$MODE" = "backup" ];then
     FOLDER="$MYSQL_DATABASE.$DATE"
@@ -89,8 +49,11 @@ if [ "$MODE" = "restore" ];then
         echo "Show table $i:" && mysql -u "$MYSQL_USER" -p$MYSQL_PASSWORD -h "$MYSQL_HOST" "$MYSQL_DATABASE" -e "select * from $i;"
         echo "Show auto_increment of table $i:" && mysql -u misp -p$MYSQL_PASSWORD misp -e "SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name = \"$i\" AND table_schema = DATABASE( ) ;"
         read "TMP"
+        ############# MODIFY Sector
+        echo "Set auto_increment of table $i to 1:" && read "TMP" && mysql -u misp -p$MYSQL_PASSWORD misp -e "ALTER TABLE $i AUTO_INCREMENT = 1;"
+        
         echo "Truncate $i:" && read "TMP" && mysql -u "$MYSQL_USER" -p$MYSQL_PASSWORD -h "$MYSQL_HOST" "$MYSQL_DATABASE" -e "truncate $i;"
-        mysql -u "$MYSQL_USER" -p$MYSQL_PASSWORD -h "$MYSQL_HOST" "$MYSQL_DATABASE" < "$FOLDER/$i.sql" && echo "Imported File: $FOLDER/$i.sql"
+        echo "Import $FOLDER/$i:" && read "TMP" && mysql -u "$MYSQL_USER" -p$MYSQL_PASSWORD -h "$MYSQL_HOST" "$MYSQL_DATABASE" < "$FOLDER/$i.sql" && echo "Imported File: $FOLDER/$i.sql"
     done
 fi
 
