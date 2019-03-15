@@ -7,8 +7,6 @@ addons:
 
 env:
   global:
-  # Docker Hub Token
-  - secure: "peqZoxwLJdsMjo3Mrs4eQEo3JgLS4boZNgv1AypqeKosc2oKsYSSoDF6bFnqwuf/giOZ2btjca+v9Ij+w1yIYzLY66BepBbEKxCvtmxX8bZDuu0stgEyXyinSnxRZFbSKdcRq9pY3dsg/lu3izgPwwT69i5UBJsSa+CWrnUK9h3zC03sgpaeLPX9bTEc9+ABGuFjMN4rskBqOnM890QDt2m7X5asKk+xo3ege88os7LZwTd1tStk5xnoRaSHgeNpNFa8WA/L6bF2HQDd48fpe97jVofRCfnDZRDoqnJvTscQi9fMEKoDiVcV/PgAPsfhP41cw4f2inmJc+KCRnCkuRsnmOfNUJebvbIvGLmgxlwIyQXEKzdTeznC/TI+y5eZFu5SoW3n4gOmolrOM1JD9bFrEanKVpVA40K+OkhlyFmP98iwhD3Wg2ZonMNACvEKlG14hreZ9MBxWOtGnz2E49x6CM9zz9jKPJM9ye/wYj3XGFL7mCPuyrrH3iBwkeYwjJZD2fCgMbWz2Ji14DK6HVQV+fA7UXMYzf18J31YRL/gNg5LAkZcuDvvaHM/cX1i7M02iObpLEr0Ytqwozn7giACf3Pz1r3rzxziT/z6OLaqD5SXQRRaIJFyVMM3uixOy+3H7DnNQHu/wrADGaFdSKZCCLdQYsRK7uEPa0J0scI="
   # The following variables are setup via project settings:
   # DOCKER_HUB_TOKEN
   # DOCKER_SLUG
@@ -37,28 +35,10 @@ env:
 before_install:
 - sudo .ci/01_before_install.sh
 
-
 script:
-- make -C .ci  build v=${VERSION}
-- make -C .ci  tags REPOURL=$DOCKER_SLUG
+- make -C .ci build v=${VERSION} prod=false      # Set prod=true, if you want to build NO '-dev' tag
+- make -C .ci tags REPO=$DOCKER_SLUG prod=false  # Set prod=true, if you want tags NO '-dev' tag
 
-
-after_script:
-# # check if branch=master and the current build is no pull request, then push it to docker hub
-# #- [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" ]] && make push;
-# - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
-#     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-#       make -C .ci  push REPO=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
-
-
-after_success:
-# notify Docker Hub to make a new build
-# - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
-#     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-#       make -C .ci  notify-hub-docker-com TOKEN=$DOCKER_HUB_TOKEN
-#     fi; 
-#   fi
-
-# don't notify me when things fail
 notifications:
+  # don't notify me when things fail
   email: false
