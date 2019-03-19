@@ -2,5 +2,4 @@ request
 pymisp
 mysql
 argparse
-logging
 pyopenssl
