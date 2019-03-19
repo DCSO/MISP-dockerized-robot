@@ -190,6 +190,12 @@ RUN apt-get update -y; \
         #mysql -u root -p < ./mariadb_sys_install.sql
         ;
 
+# Install pymisp migrate script    
+    COPY files/scripts/pymisp_scripts/ /srv/scripts/pymisp_scripts/
+    RUN cd /srv/scripts/pymisp_scripts/ \
+        ;pip3 install --no-cache-dir -r requirements.txt
+
+
 # Setup Workdir
 WORKDIR /srv
 
@@ -198,10 +204,6 @@ COPY files/scripts/backup_restore.sh /srv/scripts/
 COPY files/scripts/configure_misp.sh /srv/scripts/
 COPY files/scripts/deploy_environment.sh /srv/scripts/
 COPY files/scripts/test.sh /srv/scripts/
-
-COPY files/scripts/pymisp_scripts/keys.py /srv/scripts/pymisp_scripts/
-COPY files/scripts/pymisp_scripts/migrate_events.py /srv/scripts/pymisp_scripts/
-COPY files/scripts/pymisp_scripts/misp_cron.py /srv/scripts/pymisp_scripts/
 
 COPY files/.bashrc /root/
 COPY files/entrypoint.sh /
