@@ -1,2 +1,8 @@
 request
 pymisp
+mysql
+argparse
+json
+logging
+os
+pyopenssl
