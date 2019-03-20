@@ -26,32 +26,8 @@ import time
 # https://pyopenssl.org/en/stable/api/crypto.html#x509-objects
 # http://www.yothenberg.com/validate-x509-certificate-in-python/
 from OpenSSL import crypto
-
-
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
-
-#import mysql.connector
-
-
-# Setup MYSQL Connector
-# if os.environ['MYSQL_HOST'] == None:
-#     MYSQL_HOST = "misp-server"
-# if os.environ['MYSQL_DB'] == None:
-#     MYSQL_DB = "misp"
-# if os.environ['MYSQL_PASSWORD'] == None:
-#     MYSQL_PASSWORD = "yourpassword"
-# if os.environ['MYSQL_USER'] == None:
-#     MYSQL_USER = "misp"
-
-# mydb = mysql.connector.connect(
-#   host=MYSQL_HOST,
-#   user=MYSQL_USER,
-#   passwd=MYSQL_PASSWORD,
-#   database=MYSQL_DB
-# )
-
 # Deactivate InsecureRequestWarnings
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
@@ -64,52 +40,55 @@ try:
 except NameError:
     pass
 
-class sql_statements(object):
-    def __init__(self,file):
-        #
-        # Inilitalize sql_statement object
-        #
-        self.SQL_SET = set()        # create empty set
-        self.FILE=file              # change file to parametet
-        self.load_existing_sql_statement_from_file()    # Load all existing SQL Statements from 'file'
+# class sql_statements(object):
+#     def __init__(self,file):
+#         #
+#         # Inilitalize sql_statement object
+#         #
+#         self.SQL_SET = set()        # create empty set
+#         self.FILE=file              # change file to parametet
+#         self.load_existing_sql_statement_from_file()    # Load all existing SQL Statements from 'file'
     
-    def load_existing_sql_statement_from_file(self):
-        #
-        # Read existing SQL statements from file
-        #
-        with open (self.FILE, 'r') as file:
-            for line in  file.readlines():
-                self.SQL_SET.add(line)
+#     def load_existing_sql_statement_from_file(self):
+#         #
+#         # Read existing SQL statements from file
+#         #
+#         try:
+#             with open (self.FILE, 'r') as file:
+#                 for line in  file.readlines():
+#                     self.SQL_SET.add(line)
+#         except:
+#             print('')
 
-    def add_sql_data(self, UUID, email):
-        #
-        #   This function opens a file and write the sql statements to an given UUID and event_creator_email
-        #
-        # MariaDB [misp]> select * from events;
-        # +----+--------+------------+--------+---------+--------------------------------------+-----------+----------+-----------------+---------+------------+--------------+------------------+---------------------+--------+-----------------+-------------------+---------------------+--------------+
-        # | id | org_id | date       | info   | user_id | uuid                                 | published | analysis | attribute_count | orgc_id | timestamp  | distribution | sharing_group_id | proposal_email_lock | locked | threat_level_id | publish_timestamp | disable_correlation | extends_uuid |
-        # +----+--------+------------+--------+---------+--------------------------------------+-----------+----------+-----------------+---------+------------+--------------+------------------+---------------------+--------+-----------------+-------------------+---------------------+--------------+
-        # |  1 |      1 | 2019-02-15 | Test   |       1 | 5c66f188-a160-4d48-a0d5-0397c0a82f05 |         1 |        2 |               1 |       1 | 1550250838 |            1 |                0 |                   0 |      0 |               3 |        1551286087 |                   0 |              |
-        # |  2 |      1 | 2019-02-15 | Test23 |       1 | 5c66fc2b-b190-4d01-a90b-0394c0a82f05 |         0 |        0 |               1 |       1 | 1550253696 |            0 |                0 |                   0 |      0 |               4 |                 0 |                   0 |              |
-        # +----+--------+------------+--------+---------+--------------------------------------+-----------+----------+-----------------+---------+------------+--------------+------------------+---------------------+--------+-----------------+-------------------+---------------------+--------------+
-        # MariaDB [misp]> select * from users;
-        # +----+--------------------------------------------------------------+--------+-----------+------------------+-----------+------------------------------------------+------------+--------+---------------+----------+---------------+----------+---------+-----------+--------------+----------+------------+---------------+------------+--------------+--------------+---------------+
-        # | id | password                                                     | org_id | server_id | email            | autoalert | authkey                                  | invited_by | gpgkey | certif_public | nids_sid | termsaccepted | newsread | role_id | change_pw | contactalert | disabled | expiration | current_login | last_login | force_logout | date_created | date_modified |
-        # +----+--------------------------------------------------------------+--------+-----------+------------------+-----------+------------------------------------------+------------+--------+---------------+----------+---------------+----------+---------+-----------+--------------+----------+------------+---------------+------------+--------------+--------------+---------------+
-        # |  1 | $2a$10$kTK7N1T29jI/cPG.7enpyePmMZvDL1fBOnQan1AvPZFoprImHgOKe |      1 |         0 | admin@admin.test |         0 | yj8AjP3dD5zCCNiXCFw106oD6ZFhWqIMpdFNZ6NV |          0 | NULL   |               |  4000000 |             0 |        0 |       1 |         0 |            0 |        0 | NULL       |    1551285036 | 1551196845 |            0 |         NULL |    1551196419 |
-        # +----+--------------------------------------------------------------+--------+-----------+------------------+-----------+------------------------------------------+------------+--------+---------------+----------+---------------+----------+---------+-----------+--------------+----------+------------+---------------+------------+--------------+--------------+---------------+
+#     def add_sql_data(self, UUID, email):
+#         #
+#         #   This function opens a file and write the sql statements to an given UUID and event_creator_email
+#         #
+#         # MariaDB [misp]> select * from events;
+#         # +----+--------+------------+--------+---------+--------------------------------------+-----------+----------+-----------------+---------+------------+--------------+------------------+---------------------+--------+-----------------+-------------------+---------------------+--------------+
+#         # | id | org_id | date       | info   | user_id | uuid                                 | published | analysis | attribute_count | orgc_id | timestamp  | distribution | sharing_group_id | proposal_email_lock | locked | threat_level_id | publish_timestamp | disable_correlation | extends_uuid |
+#         # +----+--------+------------+--------+---------+--------------------------------------+-----------+----------+-----------------+---------+------------+--------------+------------------+---------------------+--------+-----------------+-------------------+---------------------+--------------+
+#         # |  1 |      1 | 2019-02-15 | Test   |       1 | 5c66f188-a160-4d48-a0d5-0397c0a82f05 |         1 |        2 |               1 |       1 | 1550250838 |            1 |                0 |                   0 |      0 |               3 |        1551286087 |                   0 |              |
+#         # |  2 |      1 | 2019-02-15 | Test23 |       1 | 5c66fc2b-b190-4d01-a90b-0394c0a82f05 |         0 |        0 |               1 |       1 | 1550253696 |            0 |                0 |                   0 |      0 |               4 |                 0 |                   0 |              |
+#         # +----+--------+------------+--------+---------+--------------------------------------+-----------+----------+-----------------+---------+------------+--------------+------------------+---------------------+--------+-----------------+-------------------+---------------------+--------------+
+#         # MariaDB [misp]> select * from users;
+#         # +----+--------------------------------------------------------------+--------+-----------+------------------+-----------+------------------------------------------+------------+--------+---------------+----------+---------------+----------+---------+-----------+--------------+----------+------------+---------------+------------+--------------+--------------+---------------+
+#         # | id | password                                                     | org_id | server_id | email            | autoalert | authkey                                  | invited_by | gpgkey | certif_public | nids_sid | termsaccepted | newsread | role_id | change_pw | contactalert | disabled | expiration | current_login | last_login | force_logout | date_created | date_modified |
+#         # +----+--------------------------------------------------------------+--------+-----------+------------------+-----------+------------------------------------------+------------+--------+---------------+----------+---------------+----------+---------+-----------+--------------+----------+------------+---------------+------------+--------------+--------------+---------------+
+#         # |  1 | $2a$10$kTK7N1T29jI/cPG.7enpyePmMZvDL1fBOnQan1AvPZFoprImHgOKe |      1 |         0 | admin@admin.test |         0 | yj8AjP3dD5zCCNiXCFw106oD6ZFhWqIMpdFNZ6NV |          0 | NULL   |               |  4000000 |             0 |        0 |       1 |         0 |            0 |        0 | NULL       |    1551285036 | 1551196845 |            0 |         NULL |    1551196419 |
+#         # +----+--------------------------------------------------------------+--------+-----------+------------------+-----------+------------------------------------------+------------+--------+---------------+----------+---------------+----------+---------+-----------+--------------+----------+------------+---------------+------------+--------------+--------------+---------------+
 
-        # create SQL Statement
-        SQL_STATEMENT = "UPDATE events SET user_id = ( SELECT id FROM users WHERE email = '" + email + "') WHERE uuid = '" + UUID + "';\n"
-        print(SQL_STATEMENT)
-        self.SQL_SET.add(SQL_STATEMENT)
+#         # create SQL Statement
+#         SQL_STATEMENT = "UPDATE events SET user_id = ( SELECT id FROM users WHERE email = '" + email + "') WHERE uuid = '" + UUID + "';\n"
+#         print(SQL_STATEMENT)
+#         self.SQL_SET.add(SQL_STATEMENT)
 
-    def write_sql_statements_to_file(self):
-        #
-        #   Write all SQL statements from set to file
-        #
-        with open (self.FILE, 'w') as file:
-            file.writelines(self.SQL_SET)
+#     def write_sql_statements_to_file(self):
+#         #
+#         #   Write all SQL statements from set to file
+#         #
+#         with open (self.FILE, 'w+') as file:
+#             file.writelines(self.SQL_SET)
 
 
 def init(url, key, misp_verifycert):
@@ -158,24 +137,22 @@ def migrate_events(START_EVENT_ID,END_EVENT_ID, misp_new, misp_old, sql_handler)
     print('Migrate events...')
     for EVENT_ID in range(START_EVENT_ID, END_EVENT_ID+1):
         tmp_event = misp_old.get_event(EVENT_ID)
+        if DEBUG is True:
+            print(json.dumps(tmp_event, indent=4))
         # If event ID is not more used ignore it.
-        #
-        # TODO: wenn ordentliches event name not available try block???
-        #
-
         try: 
-            if tmp_event['name'] == 'Invalid event':
+            if tmp_event['name'] is 'Invalid event':
                 print('Invalid Event '+str(EVENT_ID))
                 continue
-        
-        # Write an SQL Statement file to change the User afterwards
-        #sql_handler.add_sql_data(tmp_event['Event']['uuid'],tmp_event['Event']['event_creator_email'])
-        
-        # Add Events to new MISP
-        misp_new.add_event(tmp_event)
-        
-        print('Migrate events...finished')
-        input("Press Enter to continue...")     
+        except:
+            # Write an SQL Statement file to change the User afterwards
+            #sql_handler.add_sql_data(tmp_event['Event']['uuid'],tmp_event['Event']['event_creator_email'])
+
+            # Add Events to new MISP
+            misp_new.add_event(tmp_event)
+            print(str(EVENT_ID)+' / '+ str(END_EVENT_ID)+' events migrated...')
+    print('Migrate events...finished')
+    input("Press Enter to continue...")     
 
 def migrate_roles(misp_new, misp_old):
     print ('Migrate roles...')
@@ -355,8 +332,8 @@ if __name__ == '__main__':
 
         # Write and load from the following file:
         #SQL_HANDLER = sql_statements("migrate.sql")
-        migrate_events(START_EVENT_ID,END_EVENT_ID,misp_new,misp_old, SQL_HANDLER)
-        SQL_HANDLER.write_sql_statements_to_file()
+        migrate_events(START_EVENT_ID,END_EVENT_ID,misp_new,misp_old, None)
+        #SQL_HANDLER.write_sql_statements_to_file()
     
     # Migrate Users
     if args.migrate_users != None:
