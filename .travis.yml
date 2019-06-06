@@ -7,11 +7,9 @@ addons:
 
 env:
   global:
-  # The following variables are setup via project settings:
-  # DOCKER_HUB_TOKEN
-  # DOCKER_SLUG
-  # DOCKER_USERNAME
-  # DOCKER_PASSWORD
+  #- DOCKER_COMPOSE_VERSION=1.4.2
+  - COMPONENT=robot
+
   matrix:
   # legacy
   - VERSION=1.0.0-ubuntu
@@ -29,16 +27,17 @@ env:
   - VERSION=2.2-debian
   - VERSION=2.3-debian
   - VERSION=2.4-debian
-  
-
-
-before_install:
-- sudo .ci/01_before_install.sh
 
 script:
-- make -C .ci build v=${VERSION} prod=false      # Set prod=true, if you want to build NO '-dev' tag
-- make -C .ci tags REPO=$DOCKER_SLUG prod=false  # Set prod=true, if you want tags NO '-dev' tag
+- docker build -f "$TRAVIS_BUILD_DIR/$FOLDER/Dockerfile" 
+                      --build-arg VCS_REF="$TRAVIS_COMMIT" 
+                      --build-arg VERSION="$FOLDER" 
+                      --build-arg GIT_REPO="https://github.com/$TRAVIS_REPO_SLUG" 
+                      --build-arg COMPONENT="$COMPONENT"
+                      --build-arg BUILD_DATE="$(date -u +"%Y-%m-%d")"
+                      "$TRAVIS_BUILD_DIR/$FOLDER"
 
+
+# don't notify me when things fail
 notifications:
-  # don't notify me when things fail
   email: false
