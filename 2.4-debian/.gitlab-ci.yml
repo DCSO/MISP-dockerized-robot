@@ -1,10 +1,17 @@
-build 2.4-debian:
-  extends: .build
-  variables:
-    VERSION: "2.4-debian"
-
 test 2.4-debian:
   extends: .test
   variables:
     VERSION: "2.4-debian"
-    
+  only:
+    changes:
+    - 2.4-debian/*
+
+build 2.4-debian:
+  extends: .build
+  variables:
+    VERSION: "2.4-debian"
+    TAGS: "${FOLDER}-dev latest-dev 2-dev"
+  only:
+    changes:
+    - 2.4-debian/*
+
