@@ -71,8 +71,8 @@ RUN apt-get update -y; \
             python3-minimal \
             python3-pip \
             python3-venv \
-        ;apt-get -y autoremove \
-        ;apt-get -y clean \
+        # ;apt-get -y autoremove \
+        # ;apt-get -y clean \
         ;git clone https://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDER \
         ;pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt \
     # Install PyMISP
@@ -81,8 +81,8 @@ RUN apt-get update -y; \
         #;apt-get update \
         ;apt-get -y install \
             wget \
-        ;apt-get -y autoremove \
-        ;apt-get -y clean \
+        # ;apt-get -y autoremove \
+        # ;apt-get -y clean \
         ;mkdir -p /srv/scripts/mysqltuner \
         ;cd /srv/scripts/mysqltuner \
         ;wget http://mysqltuner.pl/ -O mysqltuner.pl \
@@ -100,7 +100,7 @@ RUN apt-get update -y; \
         ;mkdir /srv/DB_improvement \
         ;cd /srv/DB_improvement \
         ;curl "https://codeload.github.com/good-dba/mariadb-sys/zip/master" > mariadb-sys.zip \
-        ;unzip -l mariadb-sys.zip \
+        #;unzip -l mariadb-sys.zip \
         ;unzip mariadb-sys.zip \
         #;cd mariadb-sys-master/ 
         #mysql -u root -p < ./mariadb_sys_install.sql
