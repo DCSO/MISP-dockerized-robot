@@ -17,7 +17,6 @@ include:
 #
 # For a cleaner Gitlab CI file include all subfolder which should be build:
 #
-include:
   #- '.legacy/.gitlab-ci.yml'
   #- '1.0-ubuntu/.gitlab-ci.yml'
   #- '1.1-ubuntu/.gitlab-ci.yml'
