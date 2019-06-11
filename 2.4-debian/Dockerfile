@@ -97,11 +97,10 @@ RUN apt-get update -y; \
             mysql-client \
         ;apt-get -y autoremove \
         ;apt-get -y clean \
-        ;mkdir /srv/DB_improvement \
-        ;cd /srv/DB_improvement \
+        ;mkdir /srv/scripts/DB_improvement \
+        ;cd /srv/scripts/DB_improvement \
         ;curl "https://codeload.github.com/good-dba/mariadb-sys/zip/master" > mariadb-sys.zip \
-        #;unzip -l mariadb-sys.zip \
-        ;unzip mariadb-sys.zip \
+        ;unzip -l mariadb-sys.zip \
         #;cd mariadb-sys-master/ 
         #mysql -u root -p < ./mariadb_sys_install.sql
         ;
@@ -115,7 +114,6 @@ COPY files/scripts/configure_misp.sh /srv/scripts/
 COPY files/scripts/deploy_environment.sh /srv/scripts/
 COPY files/scripts/test.sh /srv/scripts/
 COPY files/.bashrc /root/
-COPY files/entrypoint.sh /
 
 # Add Entrypoint
 #ENTRYPOINT [ "/entrypoint.sh" ]
