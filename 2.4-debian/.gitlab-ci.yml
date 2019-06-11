@@ -10,4 +10,4 @@ build 2.4-debian:
   extends: .build
   variables:
     VERSION: "2.4-debian"
-    TAGS: "${FOLDER}-dev latest-dev 2-dev"
+    TAGS: "${VERSION}-dev latest-dev 2-dev"
