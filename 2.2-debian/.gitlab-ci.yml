@@ -2,8 +2,13 @@ build 2.2-debian:
   extends: .build
   variables:
     VERSION: "2.2-debian"
+    TAGS: "${VERSION}-dev"
+    RELEASE_DATE: 2018-10
 
 test 2.2-debian:
   extends: .test
   variables:
     VERSION: "2.2-debian"
+  only:
+    changes:
+    - 2.2-debian/*
