@@ -44,11 +44,11 @@ RUN apt-get update -y; \
             python3-setuptools \
         ;apt-get autoremove -y \ 
         ;apt-get clean -y
-    # Install Docker + docker-compose
-    RUN apt-get update \
-        ;apt-get -y install \
-            curl \
-        ;curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -  \
+    
+    
+# Install Docker + docker-compose
+    RUN \
+        curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -  \
         ;apt-key fingerprint 0EBFCD88 \
         ;add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" \
         ;apt-get update \
@@ -56,12 +56,13 @@ RUN apt-get update -y; \
             docker-ce \
         ;apt-get autoremove -y \
         ;apt-get clean -y \
-        ;pip3 --no-cache-dir install docker-compose \
+        ;curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+        ;chmod +x /usr/local/bin/docker-compose \
         ;
 
 
 # Install MISP-dockerized-testbench
-    ARG GIT_FOLDER="/srv/MISP-dockerized-testbench"
+    ENV GIT_FOLDER="/srv/MISP-dockerized-testbench"
     
     # Install dependencies and clone the repository
     # apt-get is available (mostly debian or ubuntu)
@@ -75,8 +76,6 @@ RUN apt-get update -y; \
         # ;apt-get -y clean \
         ;git clone https://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDER \
         ;pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt \
-    # Install PyMISP
-        pip3 install --no-cache-dir request pymisp \
     # Install MySQL Tuner
         #;apt-get update \
         ;apt-get -y install \
