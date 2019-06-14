@@ -5,7 +5,6 @@ set -eu
 NC='\033[0m' # No Color
 Light_Green='\033[1;32m'  
 STARTMSG="${Light_Green}[TEST]${NC}"
-set -xv
 PROXY_IP=$(docker inspect misp-proxy|grep IPAddress| tail -1|cut -d '"' -f 4)
 # Functions
 echo (){
