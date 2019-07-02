@@ -2,3 +2,14 @@ build 1.1-ubuntu:
   extends: .build
   variables:
     VERSION: "1.1-ubuntu"
+    TAGS: "${VERSION}-dev 1.0.1-ubuntu"
+    RELEASE_DATE: 2018-06
+
+
+test 1.1-ubuntu:
+  extends: .test
+  variables:
+    VERSION: "1.1-ubuntu"
+  only:
+    changes:
+    - 1.1-ubuntu/*
