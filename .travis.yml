@@ -38,6 +38,6 @@ script:
                       "$TRAVIS_BUILD_DIR/$FOLDER"
 
 
-# don't notify me when things fail
-notifications:
-  email: false
+# # don't notify me when things fail
+# notifications:
+#   email: false
