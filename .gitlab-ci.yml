@@ -6,10 +6,6 @@ notify:
 variables:
   COMPONENT: robot
 
-.build:
-  only:
-  - feat/MDD-188
-
 include:
   - project: 'MISP/helper-containers'
     ref: master
