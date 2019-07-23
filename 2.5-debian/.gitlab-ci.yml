@@ -1,14 +1,14 @@
-build 2.4-debian:
+build 2.5-debian:
   extends: .build
   variables:
-    VERSION: "2.4-debian"
+    VERSION: "2.5-debian"
     TAGS: "${VERSION}-dev latest-dev 2-dev"
-    RELEASE_DATE: 2019-06
+    RELEASE_DATE: 2019-07
 
-test 2.4-debian:
+test 2.5-debian:
   extends: .test
   variables:
-    VERSION: "2.4-debian"
+    VERSION: "2.5-debian"
   only:
     changes:
-    - 2.4-debian/*
+    - 2.5-debian/*
