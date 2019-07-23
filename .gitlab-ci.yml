@@ -22,3 +22,4 @@ include:
   - '2.2-debian/.gitlab-ci.yml'
   - '2.3-debian/.gitlab-ci.yml'
   - '2.4-debian/.gitlab-ci.yml'
+  - '2.5-debian/.gitlab-ci.yml'

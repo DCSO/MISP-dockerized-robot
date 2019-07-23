@@ -27,6 +27,7 @@ env:
   - FOLDER=2.2-debian
   - FOLDER=2.3-debian
   - FOLDER=2.4-debian
+  - FOLDER=2.5-debian
 
 script:
 - docker build -f "$TRAVIS_BUILD_DIR/$FOLDER/Dockerfile" 
