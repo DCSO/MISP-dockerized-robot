@@ -17,7 +17,7 @@ RUN set -eu \
     # + libpython3.5-dev
     # RUN apt-get update \
     #     ;apt-get -y install \
-            libpython3.5-dev \
+            #libpython3.5-dev \
         # ;apt-get autoremove -y \ 
         # ;apt-get clean -y
     # Install dependencies
