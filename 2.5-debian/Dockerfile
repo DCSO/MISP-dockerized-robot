@@ -35,7 +35,6 @@ RUN set -eu \
             software-properties-common \
             python3-pip \
             python3-setuptools \
-            mariadb-client \
         ;apt-get autoremove -y \ 
         ;apt-get clean -y
     
@@ -84,7 +83,7 @@ RUN set -eu \
         ;apt-get -y install \
             curl \
             unzip \
-            mysql-client \
+            mariadb-client \
         ;apt-get -y autoremove \
         ;apt-get -y clean \
         ;mkdir /srv/scripts/DB_improvement \
