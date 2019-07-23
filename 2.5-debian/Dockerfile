@@ -35,7 +35,7 @@ RUN set -eu \
             software-properties-common \
             python3-pip \
             python3-setuptools \
-            mysql-client \
+            mariadb-client \
         ;apt-get autoremove -y \ 
         ;apt-get clean -y
     
