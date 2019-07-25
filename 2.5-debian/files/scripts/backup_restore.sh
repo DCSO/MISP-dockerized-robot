@@ -7,7 +7,7 @@ if [[ ! ${1} =~ (backup|restore) ]]; then
   exit 1
 fi
 
-if [[ ${1} == "backup" && ! ${2} =~ (server|redis|mysql|proxy|config|all) ]]; then
+if [[ ! ${2} =~ (server|redis|mysql|proxy|config|all) ]]; then
   echo "Second parameter needs to be 'server', 'redis', 'mysql', 'proxy', 'config' or 'all'"
   exit 1
 fi
@@ -23,7 +23,7 @@ MYSQL_DATABASE=${DB_DATABASE:-"misp"}
 MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
 MYSQL_HOST=${DB_HOST:-"misp-server"}
 MYSQL_PORT=${DB_PORT:-3306}
-MYSQL_CMD="-u root -p${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} -p${MYSQL_PORT} "
+MYSQL_CMD="-u root -p${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} -P ${MYSQL_PORT} "
 # Redis
 REDIS_FQDN=${REDIS_FQDN:-"misp-server"}
 REDIS_PORT=${REDIS_PORT:-5432}
@@ -51,6 +51,9 @@ function backup() {
         echo "Backup server at ${DOCKER_BACKUPDIR}"
         tar -cvpzPf "${DOCKER_BACKUPDIR}"/backup_server_data.tar.gz /srv/misp-server/MISP
         tar -cvpzPf "${DOCKER_BACKUPDIR}"/backup_server_config.tar.gz /srv/misp-server/apache2
+        tar -cvpzPf "${DOCKER_BACKUPDIR}"/backup_ssl.tar.gz /srv/misp-ssl
+        tar -cvpzPf "${DOCKER_BACKUPDIR}"/backup_smime.tar.gz /srv/misp-smime
+        tar -cvpzPf "${DOCKER_BACKUPDIR}"/backup_pgp.tar.gz /srv/misp-pgp
       ;;&
       redis|all)
         echo "Backup redis at ${DOCKER_BACKUPDIR}"
@@ -59,19 +62,22 @@ function backup() {
       ;;&      
       proxy|all)
         echo "Backup proxy at ${DOCKER_BACKUPDIR}"
-        tar -cvpzPf "${DOCKER_BACKUPDIR}"/backup_proxy_data.tar.gz /srv/misp-proxy/conf.d
+        #tar -cvpzPf "${DOCKER_BACKUPDIR}"/backup_proxy_data.tar.gz /srv/misp-proxy/conf.d
+        tar -cvpzPf "${DOCKER_BACKUPDIR}"/backup_ssl.tar.gz /srv/misp-ssl
       ;;&
       mysql|all)
         echo "Backup mysql at ${DOCKER_BACKUPDIR} - This could take a while"
-        mysqldump "${MYSQL_CMD}" --all-databases | gzip > "${DOCKER_BACKUPDIR}/backup_mysql_all.gz" & pid=$! 
+        # shellcheck disable=SC2086
+        mysqldump ${MYSQL_CMD} --all-databases | gzip > "${DOCKER_BACKUPDIR}/backup_mysql_all.gz" & pid=$! 
         loading_animation ${pid}
-        mysqldump "${MYSQL_CMD}" "${MYSQL_DATABASE}" | gzip > "${DOCKER_BACKUPDIR}/backup_mysql_$MYSQL_DATABASE.gz" & pid=$! 
+        # shellcheck disable=SC2086
+        mysqldump ${MYSQL_CMD} "${MYSQL_DATABASE}" | gzip > "${DOCKER_BACKUPDIR}/backup_mysql_$MYSQL_DATABASE.gz" & pid=$! 
         loading_animation ${pid}
-      ;;#&
-      #config|all)
-      #  echo "Backup config files at ${DOCKER_BACKUPDIR}/misp-${DATE}"
-      #  tar -cvpzf ${DOCKER_BACKUPDIR}/backup_config.tar.gz /srv/MISP-dockerized/config
-      #;;
+      ;;&
+      config|all)
+        echo "Backup MISP-dockerized config files at ${DOCKER_BACKUPDIR}"
+        tar -cvpzf "${DOCKER_BACKUPDIR}"/backup_MISP-dockerized_config.tar.gz /srv/MISP-dockerized/config
+      ;;
     esac
     shift
   done
@@ -94,6 +100,9 @@ function restore() {
         echo "Restore MISP Server" #Debug
         tar -xvzPf "${RESTORE_LOCATION}backup_server_data.tar.gz"
         tar -xvzPf "${RESTORE_LOCATION}backup_server_config.tar.gz";
+        tar -xvzPf "${RESTORE_LOCATION}backup_ssl.tar.gz";
+        tar -xvzPf "${RESTORE_LOCATION}backup_smime.tar.gz";
+        tar -xvzPf "${RESTORE_LOCATION}backup_pgp.tar.gz";
         docker exec misp-server service apache2 restart
       ;;&
       mysql|all)
@@ -109,13 +118,15 @@ function restore() {
       ;;&
       proxy|all)
         echo "Restore MISP Proxy" #Debug
-        tar -xvzPf "${RESTORE_LOCATION}"backup_proxy_data.tar.gz
-        docker restart misp-proxy
-      ;;#&
-      #config|all)
-      #  echo "Restore config files"
-      #  tar -xvzf ${BACKUP_LOCATION}/misp-${DATE}/backup_config.tar.gz -C ${SCRIPT_DIR}/../.
-      #;;&
+        #tar -xvzPf "${RESTORE_LOCATION}"backup_proxy_data.tar.gz
+        tar -xvzPf "${RESTORE_LOCATION}backup_ssl.tar.gz";
+        #docker restart misp-proxy
+      ;;&
+      config|all)
+        echo "Restore MISP-dockerized config files"
+        #tar -xvzf ${BACKUP_LOCATION}/misp-${DATE}/backup_MISP-dockerized_config.tar.gz -C ${SCRIPT_DIR}/../.
+        tar -xvzPf "${RESTORE_LOCATION}backup_MISP-dockerized_config.tar.gz"
+      ;;&
     esac
     shift
     echo "--- Done ---"
