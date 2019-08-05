@@ -1,11 +1,16 @@
 #!/bin/bash
 set -eu
 
+# Parameters
+[ -n "${1-}" ] && TEST_LOGLEVEL=$(echo "$1"|cut -d = -f 2)
+[ -n "${2-}" ] && TEST_LOG2FILE=$(echo "$2"|cut -d = -f 2)
+
 # Variables
 NC='\033[0m' # No Color
 Light_Green='\033[1;32m'  
 STARTMSG="${Light_Green}[TEST]${NC}"
 PROXY_IP=$(docker inspect misp-proxy|grep IPAddress| tail -1|cut -d '"' -f 4)
+
 # Functions
 echo (){
     command echo "$STARTMSG $*"
@@ -15,7 +20,8 @@ echo (){
 GIT_FOLDER=${GIT_FOLDER:-"/srv/MISP-dockerized-testbench"}
 MISP_FQDN=${MISP_FQDN:-"$(grep MISP_FQDN /srv/MISP-dockerized/config/config.env |cut -d = -f 2)"}
 MISP_BASEURL=${MISP_BASEURL:-"https://$MISP_FQDN"}
-
+TEST_LOGLEVEL=${TEST_LOGLEVEL:-"info"}
+TEST_LOG2FILE=${TEST_LOG2FILE:-"False"}
 
 #
 #   MAIN
@@ -74,8 +80,8 @@ cat << EOF > settings.json
     "basic_user": "admin@admin.test",
     "basic_password": "admin",
     "password": "ChangeMe123456!",
-    "loglevel": "info",
-    "log2file": "True"
+    "loglevel": "${TEST_LOGLEVEL}",
+    "log2file": "${TEST_LOG2FILE"
 }
 
 EOF
