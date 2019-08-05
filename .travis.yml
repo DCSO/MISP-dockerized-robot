@@ -8,10 +8,6 @@ addons:
 services:
   - docker
 
-cache:
-  directories:
-    - $HOME/.cache
-
 env:
   global:
   #- DOCKER_COMPOSE_VERSION=1.4.2
@@ -28,23 +24,28 @@ env:
   - FOLDER=1.0-ubuntu
   - FOLDER=1.1-ubuntu
   - FOLDER=1.2-ubuntu
-  #- FOLDER=1.3-ubuntu
+  - FOLDER=1.3-ubuntu ADD_TAG=1-dev
   - FOLDER=2.0-debian
   - FOLDER=2.1-debian
   - FOLDER=2.2-debian
   - FOLDER=2.3-debian
   - FOLDER=2.4-debian
-  #- FOLDER=2.5-debian
+  - FOLDER=2.5-debian ADD_TAG=latest-dev 2-dev
 
 before_install:
 - docker pull gcr.io/kaniko-project/executor:latest
 - echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
 
+install:
+- wget -q https://github.com/joshdk/docker-retag/releases/download/0.0.2/docker-retag
+- chmod +x docker-retag
+- export DOCKER_USER=$DOCKER_USERNAME
+- export DOCKER_PASS=$DOCKER_PASSWORD
+
 script:
 - docker run
     -v "$TRAVIS_BUILD_DIR/$FOLDER":/workspace
     -v $HOME/.docker:/kaniko/.docker
-    -v $HOME/.cache:/cache
   gcr.io/kaniko-project/executor:latest
     --context=/workspace
     --build-arg VCS_REF=$TRAVIS_COMMIT
@@ -53,9 +54,12 @@ script:
     --build-arg COMPONENT=$COMPONENT
     --build-arg BUILD_DATE=$(date -u +"%Y-%m-%d")
     --verbosity=info
-    --cache=true
-    --cache-dir=/cache
     --destination=$DOCKER_SLUG/misp-dockerized-$COMPONENT:$FOLDER
+
+- for i in $ADD_TAG;
+  do
+    docker-retag $DOCKER_SLUG/misp-dockerized-$COMPONENT:$FOLDER $i;
+  done
 
 # - docker build -f "$TRAVIS_BUILD_DIR/$FOLDER/Dockerfile" 
 #                       --build-arg VCS_REF="$TRAVIS_COMMIT" 
