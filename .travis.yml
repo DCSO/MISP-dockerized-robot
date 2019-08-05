@@ -58,7 +58,7 @@ script:
 
 - for i in $ADD_TAG;
   do
-    docker-retag $DOCKER_SLUG/misp-dockerized-$COMPONENT:$FOLDER $i;
+    ./docker-retag $DOCKER_SLUG/misp-dockerized-$COMPONENT:$FOLDER $i;
   done
 
 # - docker build -f "$TRAVIS_BUILD_DIR/$FOLDER/Dockerfile" 
