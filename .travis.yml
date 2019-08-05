@@ -43,8 +43,8 @@ before_install:
 script:
 - docker run
     -v "$TRAVIS_BUILD_DIR/$FOLDER":/workspace
-    -v ~/.docker:/root/.docker
-    -v ~/.cache:/root/.cache
+    -v $HOME/.docker:/root/.docker
+    -v $HOME/.cache:/root/.cache
   gcr.io/kaniko-project/executor:latest
     --context=/workspace
     --build-arg VCS_REF=$TRAVIS_COMMIT
