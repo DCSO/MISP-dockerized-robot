@@ -81,7 +81,7 @@ cat << EOF > settings.json
     "basic_password": "admin",
     "password": "ChangeMe123456!",
     "loglevel": "${TEST_LOGLEVEL}",
-    "log2file": "${TEST_LOG2FILE"
+    "log2file": "${TEST_LOG2FILE}"
 }
 
 EOF
