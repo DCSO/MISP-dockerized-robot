@@ -100,7 +100,7 @@ WORKDIR /srv
 # COPY scripts
 COPY files/scripts/backup_restore.sh /srv/scripts/
 COPY files/scripts/test.sh /srv/scripts/
-COPY files/scripts/miograte_user_information_from_events.sh /srv/scripts/
+COPY files/scripts/migrate_user_information_from_events.sh /srv/scripts/
 COPY files/scripts/test_mysql_performance.sh /srv/scripts/
 COPY files/scripts/test_mysql_performance.sql /srv/scripts/
 COPY files/.bashrc /root/
