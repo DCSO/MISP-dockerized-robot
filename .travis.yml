@@ -5,6 +5,13 @@ addons:
     sources:
       - docker-xenial
 
+services:
+  - docker
+
+cache:
+  directories:
+    - $HOME/.cache
+
 env:
   global:
   #- DOCKER_COMPOSE_VERSION=1.4.2
@@ -21,22 +28,44 @@ env:
   - FOLDER=1.0-ubuntu
   - FOLDER=1.1-ubuntu
   - FOLDER=1.2-ubuntu
-  - FOLDER=1.3-ubuntu
+  #- FOLDER=1.3-ubuntu
   - FOLDER=2.0-debian
   - FOLDER=2.1-debian
   - FOLDER=2.2-debian
   - FOLDER=2.3-debian
   - FOLDER=2.4-debian
-  - FOLDER=2.5-debian
+  #- FOLDER=2.5-debian
+
+before_install:
+- docker pull gcr.io/kaniko-project/executor:latest
+#- echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
 
 script:
-- docker build -f "$TRAVIS_BUILD_DIR/$FOLDER/Dockerfile" 
-                      --build-arg VCS_REF="$TRAVIS_COMMIT" 
-                      --build-arg VERSION="$FOLDER" 
-                      --build-arg GIT_REPO="https://github.com/$TRAVIS_REPO_SLUG" 
-                      --build-arg COMPONENT="$COMPONENT"
-                      --build-arg BUILD_DATE="$(date -u +"%Y-%m-%d")"
-                      "$TRAVIS_BUILD_DIR/$FOLDER"
+- docker run
+    -v "$TRAVIS_BUILD_DIR/$FOLDER":/workspace
+    -v ~/.config:/root/.config
+    -v ~/.cache:/root/.cache
+  gcr.io/kaniko-project/executor:latest
+    --context=/workspace
+    --build-arg VCS_REF=$TRAVIS_COMMIT
+    --build-arg VERSION=$FOLDER
+    --build-arg GIT_REPO=https://github.com/$TRAVIS_REPO_SLUG
+    --build-arg COMPONENT=$COMPONENT
+    --build-arg BUILD_DATE=$(date -u +"%Y-%m-%d")
+    --verbosity info
+    --cache=true
+    --cache-dir /root/.cache
+    --cache-repo ""
+    --no-push
+    #--destination=dcso/misp-dockerized-$COMPONENT:$FOLDER
+
+# - docker build -f "$TRAVIS_BUILD_DIR/$FOLDER/Dockerfile" 
+#                       --build-arg VCS_REF="$TRAVIS_COMMIT" 
+#                       --build-arg VERSION="$FOLDER" 
+#                       --build-arg GIT_REPO="https://github.com/$TRAVIS_REPO_SLUG" 
+#                       --build-arg COMPONENT="$COMPONENT"
+#                       --build-arg BUILD_DATE="$(date -u +"%Y-%m-%d")"
+#                       "$TRAVIS_BUILD_DIR/$FOLDER"
 
 
 # # don't notify me when things fail
