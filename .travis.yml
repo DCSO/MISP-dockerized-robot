@@ -43,8 +43,8 @@ before_install:
 script:
 - docker run
     -v "$TRAVIS_BUILD_DIR/$FOLDER":/workspace
-    -v $HOME/.docker:/root/.docker
-    -v $HOME/.cache:/root/.cache
+    -v $HOME/.docker:/kaniko/.docker
+    -v $HOME/.cache:/cache
   gcr.io/kaniko-project/executor:latest
     --context=/workspace
     --build-arg VCS_REF=$TRAVIS_COMMIT
@@ -54,7 +54,7 @@ script:
     --build-arg BUILD_DATE=$(date -u +"%Y-%m-%d")
     --verbosity info
     --cache=true
-    --cache-dir /root/.cache
+    --cache-dir /cache
     --cache-repo ""
     --destination=$DOCKER_SLUG/misp-dockerized-$COMPONENT:$FOLDER
 
