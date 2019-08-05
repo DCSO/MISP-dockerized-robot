@@ -73,7 +73,7 @@ do
     # copy auth_key
     AUTH_KEY="$(docker exec misp-server bash -c 'mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "SELECT authkey FROM users;" | head -2|tail -1')"
     # initial user if all is good auth_key is return
-    [ -z "$AUTH_KEY"  ] && AUTH_KEY="$(docker exec misp-server bash -c "$SUDO_WWW /var/www/MISP/app/Console/cake userInit -q")"
+    [ -z "$AUTH_KEY"  ] && AUTH_KEY="$(docker exec misp-server bash -c "gosu www-data /var/www/MISP/app/Console/cake userInit -q")"
     # if user is initalized but mysql is not ready continue
     [ "$AUTH_KEY" = "Script aborted: MISP instance already initialised." ] && continue
     # if the auth_key is save go out 
@@ -90,14 +90,14 @@ do
     fi
 done
 
-
+set -xv
 # Change to testbench folder
 cd  "$MISP_DOCKERIZED_TESTBENCH_FOLDER" || exit 1
 
 # Create report folder
 [ -d reports ] || mkdir reports
 [ -d logs ] || mkdir logs
-
+set +xv
 # Generate settings.json
 cat << EOF > settings.json
 {
