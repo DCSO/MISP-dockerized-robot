@@ -52,10 +52,9 @@ script:
     --build-arg GIT_REPO=https://github.com/$TRAVIS_REPO_SLUG
     --build-arg COMPONENT=$COMPONENT
     --build-arg BUILD_DATE=$(date -u +"%Y-%m-%d")
-    --verbosity info
+    --verbosity=info
     --cache=true
-    --cache-dir /cache
-    --cache-repo ""
+    --cache-dir=/cache
     --destination=$DOCKER_SLUG/misp-dockerized-$COMPONENT:$FOLDER
 
 # - docker build -f "$TRAVIS_BUILD_DIR/$FOLDER/Dockerfile" 
