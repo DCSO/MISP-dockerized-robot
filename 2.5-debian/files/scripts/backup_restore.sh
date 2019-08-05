@@ -25,7 +25,7 @@ MYSQL_DATABASE=${DB_DATABASE:-"misp"}
 MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
 MYSQL_HOST=${DB_HOST:-"misp-server"}
 MYSQL_PORT=${DB_PORT:-3306}
-MYSQL_CMD="-alv -u root -p${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} -P ${MYSQL_PORT} --log-error=$LOG_FILE"
+MYSQL_CMD="-v -u root -p${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} -P ${MYSQL_PORT} --log-error=$LOG_FILE"
 # Redis
 REDIS_FQDN=${REDIS_FQDN:-"misp-server"}
 REDIS_PORT=${REDIS_PORT:-5432}
@@ -142,33 +142,33 @@ restore() {
     case "$1" in    
       config|all)
         echo "Restore MISP-dockerized config files"
-        tar_extract "${RESTORE_LOCATION}backup_MISP-dockerized_config.tar.gz"
+        tar_extract "${RESTORE_LOCATION}/backup_MISP-dockerized_config.tar.gz"
         ;;&
       redis|all)
         echo "Restore MISP Redis" #Debug
-        tar_extract "${RESTORE_LOCATION}backup_redis.tar.gz"
-        echo "docker restart $REDIS_FQDN" && docker restart "$REDIS_FQDN"
+        tar_extract "${RESTORE_LOCATION}/backup_redis.tar.gz"
+        echo "Docker restart $REDIS_FQDN" && docker restart "$REDIS_FQDN"
         ;;&
       server|all)
         echo "Restore MISP Server" #Debug
-        tar_extract "${RESTORE_LOCATION}backup_server_data.tar.gz"
+        tar_extract "${RESTORE_LOCATION}/backup_server_data.tar.gz"
         #tar_extract "${RESTORE_LOCATION}backup_server_config.tar.gz";
-        tar_extract "${RESTORE_LOCATION}backup_ssl.tar.gz";
-        tar_extract "${RESTORE_LOCATION}backup_smime.tar.gz";
-        tar_extract "${RESTORE_LOCATION}backup_pgp.tar.gz";
+        tar_extract "${RESTORE_LOCATION}/backup_ssl.tar.gz";
+        tar_extract "${RESTORE_LOCATION}/backup_smime.tar.gz";
+        tar_extract "${RESTORE_LOCATION}/backup_pgp.tar.gz";
         [ -f /srv/misp-server/MISP/Config/NOT_CONFIGURED ] && rm /srv/misp-server/MISP/Config/NOT_CONFIGURED
-        echo "docker restart misp-server" && docker restart misp-server
+        echo "Docker restart misp-server" && docker restart misp-server
         ;;&
       proxy|all)
         echo "Restore MISP Proxy"
-        tar_extract "${RESTORE_LOCATION}backup_ssl.tar.gz";
+        tar_extract "${RESTORE_LOCATION}/backup_ssl.tar.gz";
         echo "docker restart misp-proxy" && docker restart misp-proxy
         ;;&
       mysql|all)
         echo "Restore MISP DB - This could take a while"
         echo "-> restore database"
         # https://stackoverflow.com/questions/23180963/restore-all-mysql-database-from-a-all-database-sql-gz-file#23180977
-        gunzip < "${RESTORE_LOCATION}"backup_mysql.gz | mysql "${MYSQL_CMD}" & pid=$!
+        gunzip < "${RESTORE_LOCATION}"/backup_mysql_all.gz | mysql "${MYSQL_CMD}" & pid=$!
         loading_animation ${pid}
         ;;&
       
