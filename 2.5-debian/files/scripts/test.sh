@@ -21,7 +21,7 @@ MISP_BASEURL=${MISP_BASEURL:-"https://$MISP_FQDN"}
 #   MAIN
 #
 
-cd  $GIT_FOLDER || exit 1
+cd  "$GIT_FOLDER" || exit 1
 
 # generate report folder
 [ -d reports ] || mkdir reports
@@ -45,16 +45,17 @@ do
 done
 
 # Init MISP and create user
+
 while true
 do
     # copy auth_key
-    export AUTH_KEY="$(docker exec misp-server bash -c 'mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "SELECT authkey FROM users;" | head -2|tail -1')"
+    AUTH_KEY="$(docker exec misp-server bash -c 'mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "SELECT authkey FROM users;" | head -2|tail -1')"
     
     # initial user if all is good auth_key is return
-    [ -z "$AUTH_KEY"  ] && export AUTH_KEY="$(docker exec misp-server bash -c "sudo -E /var/www/MISP/app/Console/cake userInit -q")" && echo "new Auth_Key: $AUTH_KEY"
+    [ -z "$AUTH_KEY"  ] && AUTH_KEY="$(docker exec misp-server bash -c "sudo -E /var/www/MISP/app/Console/cake userInit -q")" && echo "new Auth_Key: $AUTH_KEY"
     
     # if user is initalized but mysql is not ready continue
-    [ "$AUTH_KEY" == "Script aborted: MISP instance already initialised." ] && continue
+    [ "$AUTH_KEY" = "Script aborted: MISP instance already initialised." ] && continue
     
     # if the auth_key is save go out 
     [ -z "$AUTH_KEY" ] || break
@@ -72,7 +73,9 @@ cat << EOF > settings.json
     "authkey": "${AUTH_KEY}",
     "basic_user": "admin@admin.test",
     "basic_password": "admin",
-    "password": "ChangeMe123456!"
+    "password": "ChangeMe123456!",
+    "loglevel": "info",
+    "log2file": "True"
 }
 
 EOF
@@ -84,6 +87,7 @@ cat settings.json
     ! grep -q "$PROXY_IP" /etc/hosts  && echo "Add $MISP_FQDN to $PROXY_IP in /etc/hosts" && command echo "$PROXY_IP $MISP_FQDN" >> /etc/hosts
 # Ping
     echo "Ping $MISP_FQDN:" && ping -w 2 "$MISP_FQDN"
+    echo
     echo "Ping misp-proxy:" && ping -w 2 misp-proxy
 
 # Run Tests
