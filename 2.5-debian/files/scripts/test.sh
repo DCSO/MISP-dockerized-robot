@@ -47,12 +47,14 @@ command echo && echo "Start Test script ... " && command echo
 RETRY=$DEFAULT_RETRY
 until [ $RETRY -le 0 ]
 do
+    set -xv
     # shellcheck disable=SC2143
     [ -n "$(docker logs misp-server 2>&1 | grep "$MSG_3")" ] && break
     # shellcheck disable=SC2143
     [ -n "$(docker logs misp-server 2>&1 | grep "$MSG_2")" ] && break
     # shellcheck disable=SC2143
     [ -n "$(docker logs misp-server 2>&1 | grep "$MSG_1")" ] && break
+    set +xv
     command echo && echo "$(date +%T) -  Wait until misp-server is ready. sleep $SLEEP_TIMER seconds; Retry $RETRY/100..." && command echo
     docker logs --tail 10 misp-server
     sleep "$SLEEP_TIMER"
@@ -90,14 +92,14 @@ do
     fi
 done
 
-set -xv
 # Change to testbench folder
 cd  "$MISP_DOCKERIZED_TESTBENCH_FOLDER" || exit 1
 
 # Create report folder
 [ -d reports ] || mkdir reports
 [ -d logs ] || mkdir logs
-set +xv
+
+
 # Generate settings.json
 cat << EOF > settings.json
 {
