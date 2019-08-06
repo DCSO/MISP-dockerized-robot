@@ -61,6 +61,7 @@ tar_extract () {
 
 # LOADING Animation
 loading_animation() {
+  # How to use: cmd & pid=$! ; loading_animation ${pid} "$2" 
   pid="${1}"
 
   spin='-\|/'
