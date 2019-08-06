@@ -38,6 +38,7 @@ MISP_BASEURL=${MISP_BASEURL:-"https://$MISP_FQDN"}
 BACKUP_LOCATION="/srv/MISP-dockerized/backup"
 DATE=$(date +"%Y-%m-%d-%H-%M-%S")
 LOG_FILE="$BACKUP_LOCATION/log_${DATE}_$BACKUP_TYPE"
+RESTORE_DB=""
 
 echo () {
   command echo "[$(date +%Y-%M-%d\ %T)] $*" >> "$LOG_FILE" 2>&1
@@ -57,6 +58,24 @@ tar_extract () {
   command tar -xvzPf "$*"  >> "$LOG_FILE" 2>&1  & pid=$!
   loading_animation ${pid} "$2"
 } 
+
+# LOADING Animation
+loading_animation() {
+  pid="${1}"
+
+  spin='-\|/'
+
+  i=0
+  while kill -0 "$pid" 2>/dev/null
+  do
+    i=$(( (i+1) %4 ))
+    # shellcheck disable=SC2059
+    printf "\r${spin:$i:1} ...working $2"
+    sleep .1
+  done
+  command echo ""
+}
+
 
 #
 # BACKUP
@@ -164,14 +183,20 @@ restore() {
         tar_extract "${RESTORE_LOCATION}/backup_ssl.tar.gz";
         echo "docker restart misp-proxy" && docker restart misp-proxy
         ;;&
-      mysql|all)
+      mysql_full|all)
         echo "Restore MISP DB - This could take a while"
         echo "-> restore database"
         # https://stackoverflow.com/questions/23180963/restore-all-mysql-database-from-a-all-database-sql-gz-file#23180977
         gunzip < "${RESTORE_LOCATION}"/backup_mysql_all.gz | mysql "${MYSQL_CMD}" & pid=$!
         loading_animation ${pid}
-        ;;&
-      
+        ;;
+      mysql_single_db)
+        echo "Restore MISP DB - This could take a while"
+        echo "-> restore database"
+        # https://stackoverflow.com/questions/23180963/restore-all-mysql-database-from-a-all-database-sql-gz-file#23180977
+        gunzip < "${RESTORE_LOCATION}"/${RESTORE_DB} | mysql "${MYSQL_CMD}" & pid=$!
+        loading_animation ${pid}
+        ;;
     esac
     shift
     echo "--- Done ---"
@@ -179,24 +204,6 @@ restore() {
 }
 
 
-#
-# LOADING Animation
-#
-loading_animation() {
-  pid="${1}"
-
-  spin='-\|/'
-
-  i=0
-  while kill -0 "$pid" 2>/dev/null
-  do
-    i=$(( (i+1) %4 ))
-    # shellcheck disable=SC2059
-    printf "\r${spin:$i:1} ...working $2"
-    sleep .1
-  done
-  command echo ""
-}
 
 #
 # MAIN
@@ -236,25 +243,34 @@ elif [[ "${BACKUP_TYPE}" = "restore" ]]; then
 
   # shellcheck disable=SC2045
   for file in $(ls -f "$RESTORE_POINT"); do
-    if [[ ${file} =~ server_data ]]; then
-      echo "[ ${i} ] - Server directory"
+    if [[ ${file} =~ server ]]; then
+      echo "[ ${i} ] - $file"
       FILE_SELECTION[${i}]="server"
       ((i++))
-    elif [[ ${file} =~ proxy_data ]]; then
-      echo "[ ${i} ] - Proxy directory"
+    elif [[ ${file} =~ proxy ]]; then
+      echo "[ ${i} ] - $file"
       FILE_SELECTION[${i}]="proxy"
       ((i++))
     elif [[ ${file} =~ redis ]]; then
-      echo "[ ${i} ] - Redis DB"
+      echo "[ ${i} ] - $file"
       FILE_SELECTION[${i}]="redis"
       ((i++))
+    elif [[ ${file} =~ mysql_all ]]; then
+      echo "[ ${i} ] - $file"
+      FILE_SELECTION[${i}]="mysql_all"
+      ((i++))
     elif [[ ${file} =~ mysql ]]; then
-      echo "[ ${i} ] - SQL DB"
-      FILE_SELECTION[${i}]="mysql"
+      echo "[ ${i} ] - $file"
+      FILE_SELECTION[${i}]="mysql_single_db"
+      RESTORE_DB=${file}
       ((i++))
     elif [[ ${file} =~ config ]]; then
-      echo "[ ${i} ] - Config files "
+      echo "[ ${i} ] - $file"
       FILE_SELECTION[${i}]="config"
+      ((i++)) 
+    else
+      echo "[ ${i} ] - $file "
+      FILE_SELECTION[${i}]="$file"
       ((i++)) 
     fi   
   done
