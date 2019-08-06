@@ -66,6 +66,8 @@ RUN set -eu \
         # ;apt-get -y clean \
         ;git clone https://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDER \
         ;pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt \
+        # remove problematic json file
+        ; mv /srv/MISP-dockerized-testbench/samples/5614b57d-0f58-4c26-ad03-6aac950d210b.json  /srv/MISP-dockerized-testbench/samples/5614b57d-0f58-4c26-ad03-6aac950d210b.json.bak
     # Install MySQL Tuner
         #;apt-get update \
         ;apt-get -y install \
@@ -155,7 +157,4 @@ LABEL   org.opencontainers.image.created="${BUILD_DATE}" \
 # Version + Name
 ENV NAME ${NAME} \
     VERSION ${VERSION} \
-    RELEASE_DATE ${RELEASE_DATE} \
-# Add /srv/srcipts to path var
-    PATH=/srv/scripts:$PATH
-
+    RELEASE_DATE ${RELEASE_DATE}
