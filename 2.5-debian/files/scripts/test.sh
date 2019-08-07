@@ -99,6 +99,22 @@ cd  "$MISP_DOCKERIZED_TESTBENCH_FOLDER" || exit 1
 [ -d reports ] || mkdir reports
 [ -d logs ] || mkdir logs
 
+# Disable problematic event for CI Pipeline
+if [ "$MISP_FQDN" = "misp.example.com" ];then
+cat << EOF > samples/event_filelist.json
+{
+    "event1":{
+        "active": true,
+        "file_name": "5bf26acf-d95c-4892-a05d-4db5950d210f.json"
+    },
+    "event2":{
+        "active": false,
+        "file_name": "5614b57d-0f58-4c26-ad03-6aac950d210b.json"
+    }
+}       
+
+EOF
+fi
 
 # Generate settings.json
 cat << EOF > settings.json
