@@ -55,8 +55,9 @@ RUN set -eu \
 
     # Install dependencies and clone the repository
     # apt-get is available (mostly debian or ubuntu)
-    ENV GIT_FOLDER="/srv/MISP-dockerized-testbench"
-    RUN apt-get update \
+    ENV MISP_dockerized_testbench_PATH="/srv/MISP-dockerized-testbench"
+    RUN set -eu \
+        ;apt-get update \
         ;apt-get -y install \
             git \
             python3-minimal \
@@ -64,14 +65,16 @@ RUN set -eu \
             python3-venv \
         # ;apt-get -y autoremove \
         # ;apt-get -y clean \
-        ;git clone https://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDER \
-        ;pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt \
+        ;git clone https://github.com/DCSO/MISP-dockerized-testbench.git $MISP_dockerized_testbench_PATH \
+        ;pip3 install --no-cache-dir -r $MISP_dockerized_testbench_PATH/requirements.txt \
         # remove problematic json file
-        ; mv /srv/MISP-dockerized-testbench/samples/5614b57d-0f58-4c26-ad03-6aac950d210b.json  /srv/MISP-dockerized-testbench/samples/5614b57d-0f58-4c26-ad03-6aac950d210b.json.bak
+        ; mv $MISP_dockerized_testbench_PATH/samples/5614b57d-0f58-4c26-ad03-6aac950d210b.json  $MISP_dockerized_testbench_PATH/samples/5614b57d-0f58-4c26-ad03-6aac950d210b.json.bak \
     # Install MySQL Tuner
         #;apt-get update \
         ;apt-get -y install \
             wget \
+            perl \
+            perl-doc \
         # ;apt-get -y autoremove \
         # ;apt-get -y clean \
         ;mkdir -p /srv/scripts/mysqltuner \
