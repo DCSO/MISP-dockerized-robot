@@ -97,7 +97,7 @@ RUN set -eu \
         #mysql -u root -p < ./mariadb_sys_install.sql
         ;
 
-COPY files/misp-testbench.py ${MISP_dockerized_testbench_PATH}/
+#COPY files/misp-testbench.py ${MISP_dockerized_testbench_PATH}/
 
 # Setup Workdir
 WORKDIR /srv
