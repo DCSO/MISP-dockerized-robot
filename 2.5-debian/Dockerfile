@@ -67,8 +67,6 @@ RUN set -eu \
         # ;apt-get -y clean \
         ;git clone https://github.com/DCSO/MISP-dockerized-testbench.git $MISP_dockerized_testbench_PATH \
         ;pip3 install --no-cache-dir -r $MISP_dockerized_testbench_PATH/requirements.txt \
-        # remove problematic json file
-        ; mv $MISP_dockerized_testbench_PATH/samples/5614b57d-0f58-4c26-ad03-6aac950d210b.json  $MISP_dockerized_testbench_PATH/samples/5614b57d-0f58-4c26-ad03-6aac950d210b.json.bak \
     # Install MySQL Tuner
         #;apt-get update \
         ;apt-get -y install \
