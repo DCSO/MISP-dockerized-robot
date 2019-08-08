@@ -23,6 +23,11 @@ echo (){
     command echo "$STARTMSG $*"
 }
 
+check_curl() {
+    curl -Lk "$1" > /dev/null
+    return $?
+}
+
 # Environment Variables
 MISP_FQDN=${MISP_FQDN:-"$(grep MISP_FQDN /srv/MISP-dockerized/config/config.env |cut -d = -f 2|cut -d \" -f 2)"}
 MISP_BASEURL=${MISP_BASEURL:-"https://$MISP_FQDN"}
@@ -130,8 +135,22 @@ cat << EOF > settings.json
 }
 
 EOF
+
+
 # Show settings...
     command echo && cat settings.json
+
+# Test if curl is possible
+    if [ "$(check_curl "${MISP_BASEURL}")" -ne 0 ]; then
+        echo "Curl to ${MISP_BASEURL} is not succesful. So I try to restart misp-proxy..."
+        docker restart misp-proxy
+        sleep 5
+        if [ "$(check_curl "${MISP_BASEURL}")" -ne 0 ]; then
+            echo "curl to ${MISP_BASEURL} is not succesful. So I exist now."
+            exit 1
+        fi
+    fi
+
 
 # Add MISP_FQDN to robots hosts file for ping etc.
     ! grep -q "$MISP_FQDN" /etc/hosts  && command echo && echo "Add $MISP_FQDN to $PROXY_IP in /etc/hosts" && command echo "$PROXY_IP $MISP_FQDN" >> /etc/hosts
