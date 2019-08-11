@@ -140,6 +140,11 @@ EOF
 # Show settings...
     command echo && cat settings.json
 
+
+# Add MISP_FQDN to robots hosts file for ping etc.
+    ! grep -q "$MISP_FQDN" /etc/hosts  && command echo && echo "Add $MISP_FQDN to $PROXY_IP in /etc/hosts" && command echo "$PROXY_IP $MISP_FQDN" >> /etc/hosts
+
+
 # Test if curl is possible
     if [ "$(check_curl "${MISP_BASEURL}")" -ne 0 ]; then
         echo "Curl to ${MISP_BASEURL} is not succesful. So I try to restart misp-proxy..."
@@ -152,8 +157,6 @@ EOF
     fi
 
 
-# Add MISP_FQDN to robots hosts file for ping etc.
-    ! grep -q "$MISP_FQDN" /etc/hosts  && command echo && echo "Add $MISP_FQDN to $PROXY_IP in /etc/hosts" && command echo "$PROXY_IP $MISP_FQDN" >> /etc/hosts
 # Test if Ping works for MISP_FQDN and misp-proxy
     command echo && echo "Ping $MISP_FQDN:" && ping -w 2 "$MISP_FQDN"
     command echo && echo "Ping misp-proxy:" && ping -w 2 misp-proxy
