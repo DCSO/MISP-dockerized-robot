@@ -6,6 +6,10 @@ notify:
 variables:
   COMPONENT: robot
 
+# Travis CI builds currently robot container
+.build:
+  when: manual
+
 include:
   - project: 'MISP/helper-containers'
     ref: master
