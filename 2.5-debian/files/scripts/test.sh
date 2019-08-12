@@ -4,6 +4,7 @@ set -eu
 # Parameters
 [ -n "${1-}" ] && TEST_LOGLEVEL=$(echo "$1"|cut -d = -f 2)
 [ -n "${2-}" ] && TEST_LOG2FILE=$(echo "$2"|cut -d = -f 2)
+[ -n "${3-}" ] && TEST_SKIP_WAIT=$(echo "$2"|cut -d = -f 2)
 
 # Variables
 # NC='\033[0m' # No Color
@@ -14,9 +15,9 @@ MISP_DOCKERIZED_TESTBENCH_FOLDER="/srv/MISP-dockerized-testbench"
 MSG_3="Start Workers ... finished"
 MSG_2="Your MISP-dockerized server has been successfully booted."
 MSG_1="Your MISP docker has been successfully booted for the first time."
-SLEEP_TIMER=5
-DEFAULT_RETRY=100
-
+SLEEP_TIMER=10
+DEFAULT_RETRY=50
+MAX_WAIT=120
 
 # Functions
 echo (){
@@ -33,7 +34,7 @@ MISP_FQDN=${MISP_FQDN:-"$(grep MISP_FQDN /srv/MISP-dockerized/config/config.env 
 MISP_BASEURL=${MISP_BASEURL:-"https://$MISP_FQDN"}
 TEST_LOGLEVEL=${TEST_LOGLEVEL:-"debug"}
 TEST_LOG2FILE=${TEST_LOG2FILE:-"True"}
-
+TEST_SKIP_WAIT=${TEST_SKIP_WAIT:-"False"}
 
 
 #
@@ -42,17 +43,20 @@ TEST_LOG2FILE=${TEST_LOG2FILE:-"True"}
 
 command echo && echo "Start Test script ... " && command echo
 # Wait until all is ready
-    [ "${CI-}" = "true" ] && echo "wait 50 seconds..." && sleep 10
-    [ "${CI-}" = "true" ] && echo "wait 40 seconds..." && sleep 10
-    [ "${CI-}" = "true" ] && echo "wait 30 seconds..." && sleep 10
-    [ "${CI-}" = "true" ] && echo "wait 20 seconds..." && sleep 10
-    [ "${CI-}" = "true" ] && echo "wait 10 seconds..." && sleep 10
-
+    set -xv
+    if [ "$TEST_SKIP_WAIT" = "False" ]
+    then
+        for i in $(seq 0 15 $MAX_WAIT)
+        do
+            k=$((MAX_WAIT - i))
+            echo "wait $k seconds..." && sleep 15
+        done
+    fi
+    
 # Wait until misp-server is ready
 RETRY=$DEFAULT_RETRY
 until [ $RETRY -le 0 ]
 do
-    set -xv
     # shellcheck disable=SC2143
     [ -n "$(docker logs misp-server 2>&1 | grep "$MSG_3")" ] && break
     # shellcheck disable=SC2143
@@ -146,7 +150,8 @@ EOF
 
 
 # Test if curl is possible
-    if [ "$(check_curl "${MISP_BASEURL}")" -ne 0 ]; then
+    # shellcheck disable=SC2046
+    if [ $(check_curl "${MISP_BASEURL}") -ne 0 ]; then
         echo "Curl to ${MISP_BASEURL} is not succesful. So I try to restart misp-proxy..."
         docker restart misp-proxy
         sleep 5
