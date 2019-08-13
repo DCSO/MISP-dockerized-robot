@@ -146,7 +146,7 @@ EOF
 
 
 # Add MISP_FQDN to robots hosts file for ping etc.
-    ! grep -q "$MISP_FQDN" /etc/hosts  && newline && echo "Add $MISP_FQDN to $PROXY_IP in /etc/hosts" && newline "$PROXY_IP $MISP_FQDN" >> /etc/hosts
+    ! grep -q "$MISP_FQDN" /etc/hosts  && newline && echo "Add $MISP_FQDN to $PROXY_IP in /etc/hosts" && command echo "$PROXY_IP $MISP_FQDN" >> /etc/hosts
 
 
 # # Test if curl is possible
