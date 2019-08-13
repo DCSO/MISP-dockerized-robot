@@ -27,6 +27,10 @@ check_curl() {
     curl -Lk "$1" > /dev/null 2>&1
 }
 
+newline() {
+    command echo
+}
+
 # Environment Variables
 MISP_FQDN=${MISP_FQDN:-"$(grep MISP_FQDN /srv/MISP-dockerized/config/config.env |cut -d = -f 2|cut -d \" -f 2)"}
 MISP_BASEURL=${MISP_BASEURL:-"https://$MISP_FQDN"}
@@ -39,7 +43,7 @@ TEST_WAIT=${TEST_WAIT:-"180"}
 #   MAIN
 #
 
-command echo && echo "Start Test script ... " && command echo
+newline && echo "Start Test script ... " && newline
 # Wait until all is ready
         # shellcheck disable=SC2086
         for i in $(seq 0 15 $TEST_WAIT)
@@ -60,7 +64,7 @@ do
     # shellcheck disable=SC2143
     [ -n "$(docker logs misp-server 2>&1 | grep "$MSG_1")" ] && break
     set +xv
-    command echo && echo "$(date +%T) -  Wait until misp-server is ready. sleep $SLEEP_TIMER seconds; Retry $RETRY/100..." && command echo
+    newline && echo "$(date +%T) -  Wait until misp-server is ready. sleep $SLEEP_TIMER seconds; Retry $RETRY/$DEFAULT_RETRY..." && newline
     docker logs --tail 10 misp-server
     sleep "$SLEEP_TIMER"
     SLEEP_TIMER="$(( SLEEP_TIMER + 5))"
@@ -86,7 +90,7 @@ do
     # if the auth_key is save go out 
     [ -n "$AUTH_KEY" ] && break
     # wait 5 seconds
-    command echo && echo "$(date +%T) -  wait until the test script get the authentication key." && command echo
+    newline && echo "$(date +%T) -  wait until the test script get the authentication key.  sleep $SLEEP_TIMER seconds; Retry $RETRY/$DEFAULT_RETRY..." && newline
     sleep $SLEEP_TIMER
 
     # shellcheck disable=SC2004
@@ -138,30 +142,31 @@ EOF
 
 
 # Show settings...
-    command echo && cat settings.json
+    newline && cat settings.json
 
 
 # Add MISP_FQDN to robots hosts file for ping etc.
-    ! grep -q "$MISP_FQDN" /etc/hosts  && command echo && echo "Add $MISP_FQDN to $PROXY_IP in /etc/hosts" && command echo "$PROXY_IP $MISP_FQDN" >> /etc/hosts
+    ! grep -q "$MISP_FQDN" /etc/hosts  && newline && echo "Add $MISP_FQDN to $PROXY_IP in /etc/hosts" && newline "$PROXY_IP $MISP_FQDN" >> /etc/hosts
 
 
-# Test if curl is possible
-    # shellcheck disable=SC2046
-    if [ $(check_curl "${MISP_BASEURL}") -ne 0 ]; then
-        echo "Curl to ${MISP_BASEURL} is not succesful. So I try to restart misp-proxy..."
-        docker restart misp-proxy
-        sleep 5
-        if [ "$(check_curl "${MISP_BASEURL}")" -ne 0 ]; then
-            echo "curl to ${MISP_BASEURL} is not succesful. So I exist now."
-            exit 1
-        fi
-    fi
+# # Test if curl is possible
+#     # shellcheck disable=SC2046
+#     if check_curl "${MISP_BASEURL}"
+#     then
+#         echo "Curl to ${MISP_BASEURL} is not succesful. So I try to restart misp-proxy..."
+#         docker restart misp-proxy
+#         sleep 5
+#         if [ "$(check_curl "${MISP_BASEURL}")" -ne 0 ]; then
+#             echo "curl to ${MISP_BASEURL} is not succesful. So I exist now."
+#             exit 1
+#         fi
+#     fi
 
 
 # Test if Ping works for MISP_FQDN and misp-proxy
-    command echo && echo "Ping $MISP_FQDN:" && ping -w 2 "$MISP_FQDN"
-    command echo && echo "Ping misp-proxy:" && ping -w 2 misp-proxy
+    newline && echo "Ping $MISP_FQDN:" && ping -w 2 "$MISP_FQDN"
+    newline && echo "Ping misp-proxy:" && ping -w 2 misp-proxy
 
 # Run Tests
-    command echo && echo "Start Test: python3 misp-testbench.py " && python3 misp-testbench.py 
-    command echo && command echo && command echo && command echo
+    newline && echo "Start Test: python3 misp-testbench.py " && python3 misp-testbench.py 
+    newline && newline && newline && newline
