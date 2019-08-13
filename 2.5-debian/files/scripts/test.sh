@@ -2,9 +2,9 @@
 set -eu
 
 # Parameters
-[ -n "${1-}" ] && TEST_WAIT=$(echo "$2"|cut -d = -f 2)
-[ -n "${2-}" ] && TEST_LOGLEVEL=$(echo "$1"|cut -d = -f 2)
-[ -n "${3-}" ] && TEST_LOG2FILE=$(echo "$2"|cut -d = -f 2)
+[ -n "${1-}" ] && TEST_WAIT=$(echo "$1"|cut -d = -f 2)
+[ -n "${2-}" ] && TEST_LOGLEVEL=$(echo "$2"|cut -d = -f 2)
+[ -n "${3-}" ] && TEST_LOG2FILE=$(echo "$3"|cut -d = -f 2)
 
 # Variables
 # NC='\033[0m' # No Color
