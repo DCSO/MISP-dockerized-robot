@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eu
+[ "${DEBUG-}" = "true" ] && set -xv
 
 # Parameters
 [ -n "${1-}" ] && TEST_WAIT=$(echo "$1"|cut -d = -f 2)
@@ -38,10 +39,11 @@ TEST_LOGLEVEL=${TEST_LOGLEVEL:-"debug"}
 TEST_LOG2FILE=${TEST_LOG2FILE:-"True"}
 TEST_WAIT=${TEST_WAIT:-"180"}
 
-
 #
 #   MAIN
 #
+
+
 
 newline && echo "Start Test script ... " && newline
 # Wait until all is ready
@@ -56,14 +58,12 @@ newline && echo "Start Test script ... " && newline
 RETRY=$DEFAULT_RETRY
 until [ $RETRY -le 0 ]
 do
-    set -xv  
     # shellcheck disable=SC2143
     [ -n "$(docker logs misp-server 2>&1 | grep "$MSG_3")" ] && break
     # shellcheck disable=SC2143
     [ -n "$(docker logs misp-server 2>&1 | grep "$MSG_2")" ] && break
     # shellcheck disable=SC2143
     [ -n "$(docker logs misp-server 2>&1 | grep "$MSG_1")" ] && break
-    set +xv
     newline && echo "$(date +%T) -  Wait until misp-server is ready. sleep $SLEEP_TIMER seconds; Retry $RETRY/$DEFAULT_RETRY..." && newline
     docker logs --tail 10 misp-server
     sleep "$SLEEP_TIMER"
