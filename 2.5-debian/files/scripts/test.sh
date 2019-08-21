@@ -172,4 +172,5 @@ EOF
     # python -m unittest test_module.TestClass.test_method
     set +eu
     newline && echo "Start Test: python3 misp-testbench.py " && python3 misp-testbench.py 2> $MISP_DOCKERIZED_TESTBENCH_FOLDER/logs/error.txt
+    cat $MISP_DOCKERIZED_TESTBENCH_FOLDER/logs/test_output.log
     newline && newline && newline && newline
