@@ -168,5 +168,7 @@ EOF
     newline && echo "Ping misp-proxy:" && ping -w 2 misp-proxy
 
 # Run Tests
-    newline && echo "Start Test: python3 misp-testbench.py " && python3 misp-testbench.py 
+    # python -m unittest test_module.TestClass
+    # python -m unittest test_module.TestClass.test_method
+    newline && echo "Start Test: python3 misp-testbench.py " && python3 misp-testbench.py 2> $MISP_DOCKERIZED_TESTBENCH_FOLDER/logs/error.txt
     newline && newline && newline && newline
