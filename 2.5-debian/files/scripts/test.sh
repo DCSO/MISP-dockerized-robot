@@ -35,7 +35,7 @@ newline() {
 # Environment Variables
 MISP_FQDN=${MISP_FQDN:-"$(grep MISP_FQDN /srv/MISP-dockerized/config/config.env |cut -d = -f 2|cut -d \" -f 2)"}
 MISP_BASEURL=${MISP_BASEURL:-"https://$MISP_FQDN"}
-TEST_LOGLEVEL=${TEST_LOGLEVEL:-"debug"}
+TEST_LOGLEVEL=${TEST_LOGLEVEL:-"info"}
 TEST_LOG2FILE=${TEST_LOG2FILE:-"True"}
 TEST_WAIT=${TEST_WAIT:-"180"}
 
