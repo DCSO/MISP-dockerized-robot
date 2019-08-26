@@ -12,7 +12,6 @@ set -eu
 # Light_Green='\033[1;32m'  
 STARTMSG="[TEST]"
 PROXY_IP=$(docker inspect misp-proxy|grep IPAddress| tail -1|cut -d '"' -f 4)
-MISP_DOCKERIZED_TESTBENCH_FOLDER="/srv/MISP-dockerized-testbench"
 MSG_3="Start Workers ... finished"
 MSG_2="Your MISP-dockerized server has been successfully booted."
 MSG_1="Your MISP docker has been successfully booted for the first time."
@@ -38,6 +37,7 @@ MISP_BASEURL=${MISP_BASEURL:-"https://$MISP_FQDN"}
 TEST_LOGLEVEL=${TEST_LOGLEVEL:-"info"}
 TEST_LOG2FILE=${TEST_LOG2FILE:-"True"}
 TEST_WAIT=${TEST_WAIT:-"180"}
+MISP_DOCKERIZED_TESTBENCH_FOLDER=${MISP_DOCKERIZED_TESTBENCH_FOLDER:-"/srv/MISP-dockerized-testbench"}
 
 #
 #   MAIN
@@ -171,6 +171,6 @@ EOF
     # python -m unittest test_module.TestClass
     # python -m unittest test_module.TestClass.test_method
     set +eu
-    newline && echo "Start Test: python3 misp-testbench.py " && python3 misp-testbench.py 2> $MISP_DOCKERIZED_TESTBENCH_FOLDER/logs/error.txt
+    newline && echo "Start Test: python3 misp-testbench.py " && ${MISP_DOCKERIZED_TESTBENCH_FOLDER}/venv/bin/python3 misp-testbench.py 2> $MISP_DOCKERIZED_TESTBENCH_FOLDER/logs/error.txt
     cat $MISP_DOCKERIZED_TESTBENCH_FOLDER/logs/test_output.log
     newline && newline && newline && newline
