@@ -66,8 +66,9 @@ RUN set -eu \
         # ;apt-get -y autoremove \
         # ;apt-get -y clean \
         ;git clone https://github.com/DCSO/MISP-dockerized-testbench.git $MISP_DOCKERIZED_TESTBENCH_FOLDER \
-        ;virtualenv -p python3 ${MISP_DOCKERIZED_TESTBENCH_FOLDER}/venv \
-        ;${MISP_DOCKERIZED_TESTBENCH_FOLDER}/venv/bin/pip3 install --no-cache-dir -r $MISP_DOCKERIZED_TESTBENCH_FOLDER/requirements.txt \
+        #;virtualenv -p python3 ${MISP_DOCKERIZED_TESTBENCH_FOLDER}/venv \
+        #;${MISP_DOCKERIZED_TESTBENCH_FOLDER}/venv/bin/pip3 install --no-cache-dir -r $MISP_DOCKERIZED_TESTBENCH_FOLDER/requirements.txt \
+        ;pip3 install --no-cache-dir -r $MISP_DOCKERIZED_TESTBENCH_FOLDER/requirements.txt \
     # Install MySQL Tuner
         #;apt-get update \
         ;apt-get -y install \
