@@ -22,7 +22,7 @@ source /srv/MISP-dockerized/config/config.env
 
 # DB
 MYSQL_DATABASE=${DB_DATABASE:-"misp"}
-MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+#MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
 MYSQL_HOST=${DB_HOST:-"misp-server"}
 MYSQL_PORT=${DB_PORT:-3306}
 MYSQL_CMD="-v -u root -p${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} -P ${MYSQL_PORT} --log-error=$LOG_FILE"
