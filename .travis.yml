@@ -5,6 +5,11 @@ addons:
     sources:
       - docker-xenial
 
+branches:
+  only:
+  - master
+  - dev
+
 env:
   global:
   #- DOCKER_COMPOSE_VERSION=1.4.2
@@ -12,28 +17,32 @@ env:
 
   matrix:
   # legacy
-  - FOLDER=1.0.0-ubuntu
-  - FOLDER=1.0.1-ubuntu
-  - FOLDER=1.0.2-ubuntu
-  - FOLDER=1.0.3-ubuntu
-  - FOLDER=1.0.4-debian
+  #- FOLDER=1.0.0-ubuntu
+  #- FOLDER=1.0.1-ubuntu
+  #- FOLDER=1.0.2-ubuntu
+  #- FOLDER=1.0.3-ubuntu
+  #- FOLDER=1.0.4-debian
   ######################### 
-  - FOLDER=1.0-ubuntu
-  - FOLDER=1.1-ubuntu
-  - FOLDER=1.2-ubuntu
-  - FOLDER=1.3-ubuntu ADD_TAG="1-dev"
-  - FOLDER=2.0-debian
-  - FOLDER=2.1-debian
-  - FOLDER=2.2-debian
-  - FOLDER=2.3-debian
-  - FOLDER=2.4-debian
-  - FOLDER=2.5-debian ADD_TAG="latest-dev 2-dev"
+  #- FOLDER=1.0-ubuntu
+  #- FOLDER=1.1-ubuntu
+  #- FOLDER=1.2-ubuntu
+  - FOLDER=1.3-ubuntu TAG="1"
+  #- FOLDER=2.0-debian
+  #- FOLDER=2.1-debian
+  #- FOLDER=2.2-debian
+  #- FOLDER=2.3-debian
+  #- FOLDER=2.4-debian
+  - FOLDER=2.5-debian TAG="2"
 
 before_install:
 # Pull Kaniko Image
 - docker pull gcr.io/kaniko-project/executor:latest
 # Login to hub.docker.com
 - echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+- RELEASE_TAG="$TAG-dev";
+- if [ "$TRAVIS_BRANCH" = "master" ]; then 
+    RELEASE_TAG="$TAG";
+  fi
 
 install:
 # Add docker-retag executable
@@ -55,12 +64,12 @@ script:
     --build-arg COMPONENT=$COMPONENT
     --build-arg BUILD_DATE=$(date -u +"%Y-%m-%d")
     --verbosity=info
-    --destination=$DOCKER_SLUG/misp-dockerized-$COMPONENT:$FOLDER
+    --destination=$DOCKER_SLUG/misp-dockerized-$COMPONENT:$RELEASE_TAG
 
 # Retag images for other tags
 - for i in $ADD_TAG;
   do
-    ./docker-retag $DOCKER_SLUG/misp-dockerized-$COMPONENT:$FOLDER $i;
+    ./docker-retag $DOCKER_SLUG/misp-dockerized-$COMPONENT:$RELEASE_TAG $i;
   done
 
 # # don't notify me when things fail

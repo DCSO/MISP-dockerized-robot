@@ -19,10 +19,14 @@ fi
 # shellcheck disable=SC1091
 source /srv/MISP-dockerized/config/config.env
 
+BACKUP_LOCATION="/srv/MISP-dockerized/backup"
+DATE=$(date +"%Y-%m-%d-%H-%M-%S")
+LOG_FILE="$BACKUP_LOCATION/log_${DATE}_$BACKUP_TYPE"
+RESTORE_DB=""
 
 # DB
 MYSQL_DATABASE=${DB_DATABASE:-"misp"}
-MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+#MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD} 
 MYSQL_HOST=${DB_HOST:-"misp-server"}
 MYSQL_PORT=${DB_PORT:-3306}
 MYSQL_CMD="-v -u root -p${MYSQL_ROOT_PASSWORD} -h ${MYSQL_HOST} -P ${MYSQL_PORT} --log-error=$LOG_FILE"
@@ -35,10 +39,7 @@ MISP_FQDN=${MISP_FQDN:-""}
 MISP_BASEURL=${MISP_BASEURL:-"https://$MISP_FQDN"}
 
 
-BACKUP_LOCATION="/srv/MISP-dockerized/backup"
-DATE=$(date +"%Y-%m-%d-%H-%M-%S")
-LOG_FILE="$BACKUP_LOCATION/log_${DATE}_$BACKUP_TYPE"
-RESTORE_DB=""
+
 
 echo () {
   command echo "[$(date +%Y-%M-%d\ %T)] $*" >> "$LOG_FILE" 2>&1
@@ -167,7 +168,7 @@ restore() {
       redis|all)
         echo "Restore MISP Redis" #Debug
         tar_extract "${RESTORE_LOCATION}/backup_redis.tar.gz"
-        echo "Docker restart $REDIS_FQDN" && docker restart "$REDIS_FQDN"
+        #echo "Docker restart $REDIS_FQDN" && docker restart "$REDIS_FQDN"
         ;;&
       server|all)
         echo "Restore MISP Server" #Debug
@@ -177,32 +178,48 @@ restore() {
         tar_extract "${RESTORE_LOCATION}/backup_smime.tar.gz";
         tar_extract "${RESTORE_LOCATION}/backup_pgp.tar.gz";
         [ -f /srv/misp-server/MISP/Config/NOT_CONFIGURED ] && rm /srv/misp-server/MISP/Config/NOT_CONFIGURED
-        echo "Docker restart misp-server" && docker restart misp-server
+        #echo "Docker restart misp-server" && docker restart misp-server
         ;;&
       proxy|all)
         echo "Restore MISP Proxy"
         tar_extract "${RESTORE_LOCATION}/backup_ssl.tar.gz";
-        echo "docker restart misp-proxy" && docker restart misp-proxy
+        #echo "docker restart misp-proxy" && docker restart misp-proxy
         ;;&
       mysql_full|all)
-        echo "Restore MISP DB - This could take a while"
-        echo "-> restore database"
-        # https://stackoverflow.com/questions/23180963/restore-all-mysql-database-from-a-all-database-sql-gz-file#23180977
-        gunzip < "${RESTORE_LOCATION}"/backup_mysql_all.gz | mysql "${MYSQL_CMD}" & pid=$!
+        echo "Restore MISP DB - This could take a while" #Debug
+        echo "-> unpacking .sql file"
+        gunzip < ${RESTORE_LOCATION}/backup_mysql_all.gz | cat > ${RESTORE_LOCATION}/backup_mysql.sql & pid=$!
         loading_animation ${pid}
-        ;;
-      mysql_single_db)
-        echo "Restore MISP DB - This could take a while"
         echo "-> restore database"
-        # https://stackoverflow.com/questions/23180963/restore-all-mysql-database-from-a-all-database-sql-gz-file#23180977
-        gunzip < "${RESTORE_LOCATION}"/${RESTORE_DB} | mysql "${MYSQL_CMD}" & pid=$!
+        mysql -u root -p${MYSQL_ROOT_PASSWORD} -h misp-server -P 3306 < ${RESTORE_LOCATION}/backup_mysql.sql & pid=$!
         loading_animation ${pid}
+        echo "-> clean up"
+        rm ${RESTORE_LOCATION}/backup_mysql.sql
         ;;
+      #mysql_single_db)
+      #  echo "Restore MISP DB - This could take a while"
+      #  echo "-> restore database"
+      #  # https://stackoverflow.com/questions/23180963/restore-all-mysql-database-from-a-all-database-sql-gz-file#23180977
+      #  gunzip < "${RESTORE_LOCATION}"/${RESTORE_DB} | mysql "${MYSQL_CMD}" & pid=$!
+      #  loading_animation ${pid}
+      #  ;;
     esac
     shift
+    newline
+    echo "--- Restarting containers ---"
+    echo "Docker restart misp-redis" && docker restart misp-redis & pid=$!
+    loading_animation ${pid}
+    newline
+    echo "Docker restart misp-server" && docker restart misp-server & pid=$!
+    loading_animation ${pid}
+    newline
+    echo "Docker restart misp-proxy" && docker restart misp-proxy & pid=$!
+    loading_animation ${pid}
+    newline
     echo "--- Done ---"
   done
 }
+
 
 
 
